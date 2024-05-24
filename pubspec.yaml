@@ -1,15 +1,16 @@
 name: industry_project
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
-  sdk: '>=3.3.3 <4.0.0'
+  sdk: ">=3.3.3 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
   syncfusion_flutter_charts: ^25.2.5
+  rive: ^0.11.11
 
 dev_dependencies:
   flutter_test:
@@ -18,3 +19,6 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  #assets for rive
+  assets:
+    - assets/
