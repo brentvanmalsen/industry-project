@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:rive/rive.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class OverzichtPage extends StatefulWidget {
@@ -9,6 +11,11 @@ class OverzichtPage extends StatefulWidget {
 }
 
 class _OverzichtPageState extends State<OverzichtPage> {
+  int flowerState = 0;
+  Artboard? _riveArtboard;
+  StateMachineController? _controller;
+  SMIInput<double>? _state;
+
   List<_SalesData> data = [
     _SalesData('Jan', 1),
     _SalesData('Feb', 3),
@@ -25,19 +32,51 @@ class _OverzichtPageState extends State<OverzichtPage> {
   ];
 
   @override
+  void initState() {
+    super.initState();
+    try {
+      rootBundle.load('assets/flower.riv').then(
+        (data) async {
+          final file = RiveFile.import(data);
+          final artboard = file.mainArtboard;
+          var controller =
+              StateMachineController.fromArtboard(artboard, 'Grow');
+          if (controller != null) {
+            artboard.addController(controller);
+            _state = controller.findInput('State');
+            setState(() => _riveArtboard = artboard);
+          }
+        },
+      );
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Overzicht Page'),
-      ),
       body: Column(children: [
+        SizedBox(height: 70),
         Text('Onderwerpen hier'),
         SizedBox(height: 20),
-        Container(
-          width: 300,
-          height: 300,
-          color: Colors.red,
-        ),
+        _riveArtboard == null
+            ? const SizedBox()
+            : Container(
+                width: 300,
+                height: 300,
+                child: Rive(
+                    alignment: Alignment.center, artboard: _riveArtboard!)),
+        SizedBox(height: 20),
+        ElevatedButton(
+            onPressed: () {
+              setState(() {
+                flowerState++;
+                _state?.value = flowerState.toDouble();
+                print(_state);
+              });
+            },
+            child: Text('increase')),
         SizedBox(height: 20),
         SfCartesianChart(
           primaryXAxis: CategoryAxis(),
