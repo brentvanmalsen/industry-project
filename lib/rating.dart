@@ -1,94 +1,61 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
+import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
-void main() {
-  runApp(const MainApp());
-}
-
-class MainApp extends StatelessWidget {
-  const MainApp({Key? key}) : super(key: key);
-
+class RatingPage extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'My App',
-      home: SliderPage(),
-      debugShowCheckedModeBanner: false,
-    );
-  }
+  _RatingPageState createState() => _RatingPageState();
 }
 
-class SliderPage extends StatefulWidget {
-  @override
-  _SliderPageState createState() => _SliderPageState();
-}
-
-class _SliderPageState extends State<SliderPage> {
-  double _angle = 0.0; // De hoek van de slider
+class _RatingPageState extends State<RatingPage> {
+  double _rating = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Rating'),
+      ),
       body: Center(
-        child: GestureDetector(
-          onPanUpdate: (details) {
-            setState(() {
-              double dx = details.localPosition.dx;
-              double dy = details.localPosition.dy;
-              _angle =
-                  atan2(dy - 115, dx - 115); // Bereken de hoek van de cursor
-            });
-          },
-          child: Container(
-            width: 230, // Breedte van de cirkel
-            height: 230, // Hoogte van de cirkel
-            child: CustomPaint(
-              size: Size(230, 230),
-              painter: CircleSliderPainter(angle: _angle),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SleekCircularSlider(
+              onChangeEnd: (double value) {
+                setState(() {
+                  _rating = value;
+                });
+              },
+              min: 0,
+              max: 10,
+              initialValue: _rating,
+              appearance: CircularSliderAppearance(
+                startAngle: 180,
+                angleRange: 360,
+                customColors: CustomSliderColors(
+                  dotColor: Colors.blue,
+                  progressBarColors: [Colors.blue],
+                ),
+                size: 200,
+                customWidths: CustomSliderWidths(
+                  progressBarWidth: 10,
+                  handlerSize: 15,
+                ),
+                infoProperties: InfoProperties(
+                  modifier: (double value) {
+                    final rating = value.toStringAsFixed(1);
+                    return '$rating/10';
+                  },
+                ),
+              ),
             ),
-          ),
+            SizedBox(height: 20),
+            Text(
+              'Rating: $_rating',
+              style: TextStyle(fontSize: 20),
+            ),
+          ],
         ),
       ),
     );
-  }
-}
-
-class CircleSliderPainter extends CustomPainter {
-  final double angle;
-
-  CircleSliderPainter({required this.angle});
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    Paint outerCirclePaint = Paint()
-      ..color = Colors.blue
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 20;
-
-    Paint innerCirclePaint = Paint()
-      ..color = Colors.blue // Blauwe kleur voor de binnenste cirkel
-      ..style = PaintingStyle.fill;
-
-    Paint thumbPaint = Paint()
-      ..color = Colors.red
-      ..style = PaintingStyle.fill;
-
-    double centerX = size.width / 2;
-    double centerY = size.height / 2;
-    double radius = min(centerX, centerY) - 20;
-
-    canvas.drawCircle(Offset(centerX, centerY), radius, outerCirclePaint);
-
-    double thumbX = centerX + radius * cos(angle);
-    double thumbY = centerY + radius * sin(angle);
-
-    canvas.drawCircle(Offset(thumbX, thumbY), 10, thumbPaint);
-
-    canvas.drawCircle(Offset(centerX, centerY), 10, innerCirclePaint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) {
-    return true;
   }
 }

@@ -13,7 +13,7 @@ class MainApp extends StatelessWidget {
     return MaterialApp(
       title: 'My App',
       home: HomePage(),
-      debugShowCheckedModeBanner: false, // Verwijder de debug-banner
+      debugShowCheckedModeBanner: false,
     );
   }
 }
@@ -30,17 +30,15 @@ class HomePage extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => SliderPage()),
+                MaterialPageRoute(builder: (context) => RatingPage()),
               );
             },
             style: ElevatedButton.styleFrom(
               shape: CircleBorder(),
-              padding: const EdgeInsets.all(
-                  0),
+              padding: const EdgeInsets.all(0),
               backgroundColor: Color(0xFF4183d9),
             ),
-            child: Image.asset(
-                'assets/images/main_button.png'),
+            child: Image.asset('assets/images/main_button.png'),
           ),
         ),
       ),
