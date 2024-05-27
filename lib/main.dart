@@ -6,13 +6,14 @@ void main() {
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+  const MainApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'My App',
       home: HomePage(),
+      debugShowCheckedModeBanner: false, // Verwijder de debug-banner
     );
   }
 }
@@ -21,18 +22,26 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Home Page'),
-      ),
       body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => SliderPage()),
-            );
-          },
-          child: Text('Temporary button to go to the rating button'),
+        child: SizedBox(
+          width: 230,
+          height: 230,
+          child: ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SliderPage()),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              shape: CircleBorder(),
+              padding: const EdgeInsets.all(
+                  0),
+              backgroundColor: Color(0xFF4183d9),
+            ),
+            child: Image.asset(
+                'assets/images/main_button.png'),
+          ),
         ),
       ),
     );
