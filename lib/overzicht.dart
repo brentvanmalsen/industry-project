@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print, prefer_const_constructors, unused_field, sized_box_for_whitespace
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rive/rive.dart';
@@ -11,24 +13,29 @@ class OverzichtPage extends StatefulWidget {
 }
 
 class _OverzichtPageState extends State<OverzichtPage> {
+  // state of the flower
   int flowerState = 0;
+  // art board creation for animation
   Artboard? _riveArtboard;
+  // controller for animation
   StateMachineController? _controller;
+  // listener from state.
   SMIInput<double>? _state;
 
-  List<_SalesData> data = [
-    _SalesData('Jan', 1),
-    _SalesData('Feb', 3),
-    _SalesData('Mar', 4),
-    _SalesData('Apr', 3),
-    _SalesData('May', 4),
-    _SalesData('Jun', 4),
-    _SalesData('Jul', 5),
-    _SalesData('Aug', 6),
-    _SalesData('Sep', 7),
-    _SalesData('Oct', 8),
-    _SalesData('Nov', 9),
-    _SalesData('Dec', 10)
+  // list of incidents
+  List<_IncidentLog> data = [
+    _IncidentLog('Jan', 1),
+    _IncidentLog('Feb', 2),
+    _IncidentLog('Mar', 4),
+    _IncidentLog('Apr', 3),
+    _IncidentLog('May', 4),
+    _IncidentLog('Jun', 4),
+    _IncidentLog('Jul', 5),
+    _IncidentLog('Aug', 6),
+    _IncidentLog('Sep', 7),
+    _IncidentLog('Oct', 8),
+    _IncidentLog('Nov', 9),
+    _IncidentLog('Dec', 10)
   ];
 
   @override
@@ -58,52 +65,254 @@ class _OverzichtPageState extends State<OverzichtPage> {
     return Scaffold(
       body: Column(children: [
         SizedBox(height: 70),
-        Text('Onderwerpen hier'),
+        Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Expanded(
+                  child: Center(
+                child: Text(
+                  'Onderwerpen',
+                  style: TextStyle(
+                      fontSize: 35,
+                      fontFamily: 'Roboto',
+                      fontWeight: FontWeight.bold),
+                ),
+              )),
+              //info button
+              Align(
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(
+                      Color.fromARGB(255, 65, 130, 216),
+                    ),
+                  ),
+                  onPressed: () {},
+                  icon: const Icon(
+                    Icons.question_mark_outlined,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+        // Subject buttons
+        SizedBox(height: 25),
+        Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // First row with 3 buttons
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    width: 120,
+                    height: 35,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                            Color.fromARGB(255, 65, 130, 216)),
+                      ),
+                      onPressed: () {},
+                      child: const Text(
+                        'Vakantie',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Container(
+                    width: 120,
+                    height: 35,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                            Color.fromARGB(255, 0, 50, 130)),
+                      ),
+                      onPressed: () {},
+                      child: const Text(
+                        'Sociaal',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Container(
+                    width: 120,
+                    height: 35,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                            Color.fromARGB(255, 65, 130, 216)),
+                      ),
+                      onPressed: () {},
+                      child: const Text(
+                        'Familie',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              // second row with 2 buttons
+              SizedBox(
+                height: 5,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    width: 120,
+                    height: 35,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                            Color.fromARGB(255, 65, 130, 216)),
+                      ),
+                      onPressed: () {},
+                      child: const Text(
+                        'Stad',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Container(
+                    width: 120,
+                    height: 35,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                            Color.fromARGB(255, 65, 130, 216)),
+                      ),
+                      onPressed: () {},
+                      child: const Text(
+                        'Auto rijden',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              // third row with 3 buttons
+              SizedBox(
+                height: 5,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    width: 120,
+                    height: 35,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                            Color.fromARGB(255, 65, 130, 216)),
+                      ),
+                      onPressed: () {},
+                      child: const Text(
+                        'Ov',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Container(
+                    width: 120,
+                    height: 35,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                            Color.fromARGB(255, 65, 130, 216)),
+                      ),
+                      onPressed: () {},
+                      child: const Text(
+                        'Onderwerp',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Container(
+                    width: 120,
+                    height: 35,
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(
+                            Color.fromARGB(255, 65, 130, 216)),
+                      ),
+                      onPressed: () {},
+                      child: const Text(
+                        'Onderwerp',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
         SizedBox(height: 20),
+        //art board where animation is
         _riveArtboard == null
+            // if artboard doesn't exist create sized box
             ? const SizedBox()
+            // Else create container where artboard is in.
             : Container(
-                width: 300,
-                height: 300,
+                width: 200,
+                height: 200,
                 child: Rive(
                     alignment: Alignment.center, artboard: _riveArtboard!)),
         SizedBox(height: 20),
-        ElevatedButton(
-            onPressed: () {
-              setState(() {
-                flowerState++;
-                _state?.value = flowerState.toDouble();
-                print(_state);
-              });
-            },
-            child: Text('increase')),
-        SizedBox(height: 20),
+        //graph
         SfCartesianChart(
+          // sets axis
           primaryXAxis: CategoryAxis(),
           primaryYAxis: const NumericAxis(
             interval: 1, // Specify the interval between labels
             minimum: 0, // Set the minimum value of the axis
             maximum: 10, // Set the maximum value of the axis
           ),
+          // sets up tooltip for more info
           tooltipBehavior: TooltipBehavior(enable: true),
-          series: <CartesianSeries<_SalesData, String>>[
-            LineSeries<_SalesData, String>(
+          // creates the graph
+          series: <CartesianSeries<_IncidentLog, String>>[
+            LineSeries<_IncidentLog, String>(
               dataSource: data,
-              xValueMapper: (_SalesData sales, _) => sales.year,
-              yValueMapper: (_SalesData sales, _) => sales.sales,
-              name: 'Sales',
+              // Bottom of graph
+              xValueMapper: (_IncidentLog incidentScale, _) =>
+                  incidentScale.month,
+              // Side of graph
+              yValueMapper: (_IncidentLog incidentScale, _) =>
+                  incidentScale.incidentScale,
+              name: 'incidentScale',
+              //Dots on the line
               markerSettings: MarkerSettings(isVisible: true),
             ),
           ],
-        )
+        ),
+        SizedBox(height: 20),
+        // testing button
+        ElevatedButton(
+            onPressed: () {
+              setState(() {
+                flowerState++;
+                _state?.value = flowerState.toDouble();
+              });
+            },
+            child: Text('increase')),
       ]),
     );
   }
 }
 
-class _SalesData {
-  _SalesData(this.year, this.sales);
+class _IncidentLog {
+  _IncidentLog(this.month, this.incidentScale);
 
-  final String year;
-  final double sales;
+  final String month;
+  final double incidentScale;
 }
