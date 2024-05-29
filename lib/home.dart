@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:share_plus/share_plus.dart';
-// test
+import 'package:share/share.dart'; // Importeer de share package
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
