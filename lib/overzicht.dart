@@ -41,16 +41,21 @@ class _OverzichtPageState extends State<OverzichtPage> {
   @override
   void initState() {
     super.initState();
+    // tries creating the artboard
     try {
       rootBundle.load('assets/flower.riv').then(
         (data) async {
+          // imports the rive file
           final file = RiveFile.import(data);
           final artboard = file.mainArtboard;
+          // sets the controller name from rive
           var controller =
               StateMachineController.fromArtboard(artboard, 'Grow');
+          // if the controller is not null add the controller to the artboard
           if (controller != null) {
             artboard.addController(controller);
             _state = controller.findInput('State');
+            // sets the state of the controller
             setState(() => _riveArtboard = artboard);
           }
         },
@@ -299,6 +304,7 @@ class _OverzichtPageState extends State<OverzichtPage> {
         // testing button
         ElevatedButton(
             onPressed: () {
+              // sets the state of the flower
               setState(() {
                 flowerState++;
                 _state?.value = flowerState.toDouble();
