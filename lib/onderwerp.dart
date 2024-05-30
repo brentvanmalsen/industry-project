@@ -46,7 +46,7 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
                     child: IconButton(
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all(
-                          Color.fromARGB(255, 65, 130, 216),
+                          const Color.fromARGB(255, 65, 130, 216),
                         ),
                       ),
                       onPressed: () {},
@@ -97,6 +97,71 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
                       buildButton(7, 'Onderwerp'),
                     ],
                   ),
+                  const SizedBox(height: 35),
+                  // Third row with 3 buttons
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      const SizedBox(width: 20),
+                      // Button
+                      SizedBox(
+                        width: 50,
+                        height: 35,
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor: WidgetStateProperty.all(
+                                const Color.fromARGB(255, 65, 130, 216),
+                              ),
+                              shape: WidgetStateProperty.all(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(2)))),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const OnderwerpPage(),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            '+',
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 255, 255, 255),
+                            ),
+                          ),
+                          // Text
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      // Text
+                      const Text(
+                        'Voeg nieuw onderwerp toe',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 45),
+                  // Textfield
+                  const SizedBox(
+                      width: 300,
+                      height: 120,
+                      child: Column(
+                        children: <Widget>[
+                          Expanded(
+                            child: TextField(
+                              maxLines: 10,
+                              decoration: InputDecoration(
+                                border: OutlineInputBorder(),
+                                labelText: 'Korte samenvatting van gebeurtenis',
+                              ),
+                            ),
+                          ),
+                        ],
+                      )),
                 ],
               ),
             ),

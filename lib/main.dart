@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:industry_project/home.dart';
 import 'package:industry_project/onderwerp.dart';
 
 void main() {
