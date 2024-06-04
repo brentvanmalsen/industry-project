@@ -196,9 +196,3 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
     );
   }
 }
-
-@override
-State<StatefulWidget> createState() {
-  // TODO: implement createState
-  throw UnimplementedError();
-}
