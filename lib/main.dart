@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import 'home.dart'; // Ensure this path is correct for your project structure
+// test
+
+// Importeer home.dart
+import 'home.dart';
 
 void main() {
   runApp(const MainApp());
