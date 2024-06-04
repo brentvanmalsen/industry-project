@@ -1,18 +1,39 @@
 import 'package:flutter/material.dart';
+import 'home.dart'; // Importeer home.dart
 
 void main() {
   runApp(const MainApp());
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+  const MainApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
+    return MaterialApp(
+      title: 'My App',
+      home: MainHomePage(), // Verander naar de nieuwe home-pagina
+      debugShowCheckedModeBanner: false,
+    );
+  }
+}
+
+class MainHomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Main Page'),
+      ),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HomePage()), // Navigeer naar HomePage
+            );
+          },
+          child: Text('Temporary button to Home'), // Simpele knop toegevoegd
         ),
       ),
     );

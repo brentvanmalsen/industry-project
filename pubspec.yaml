@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  sleek_circular_slider: ^2.0.1
 
 dev_dependencies:
   flutter_test:
@@ -16,4 +17,6 @@ dev_dependencies:
   flutter_lints: ^3.0.0
 
 flutter:
-  uses-material-design: true
+  assets:
+    - assets/images/main_button.png
+    - assets/images/arrow_back.png

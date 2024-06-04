@@ -1,18 +1,28 @@
 import 'package:flutter/material.dart';
-
-void home() {
-  runApp(const HomePage());
-}
+import 'rating.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({super.key});
-
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Text('Hello World!'),
+    return Scaffold(
+      body: Center(
+        child: SizedBox(
+          width: 230,
+          height: 230,
+          child: ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => RatingPage()),
+              );
+            },
+            style: ElevatedButton.styleFrom(
+              shape: CircleBorder(),
+              padding: const EdgeInsets.all(0),
+              backgroundColor: Color(0xFF4183d9),
+            ),
+            child: Image.asset('assets/images/main_button.png'),
+          ),
         ),
       ),
     );
