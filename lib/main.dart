@@ -36,7 +36,7 @@ class _InfoScreenState extends State<InfoScreen> {
                 _buildPage(
                   context,
                   'assets/logo.png',
-                  'Welkom bij de app',
+                  'Welkom bij PeacePath',
                   'Hier krijg je een korte intrductie over de app.',
                 ),
                 _buildPage(
@@ -48,8 +48,14 @@ class _InfoScreenState extends State<InfoScreen> {
                 _buildPage(
                   context,
                   'assets/invullen.png',
-                  'Features',
+                  'Invullen',
                   'Vul vervolgens in bij welk onderwerp dit hoorde zoals: stad, werk, sport etc, of voeg een eigen onderwerp toe.',
+                ),
+                _buildPage(
+                  context,
+                  'assets/grafiek.png',
+                  'Overzicht',
+                  'Bekijk je overzicht',
                 ),
                 _buildPage(
                   context,
@@ -63,7 +69,7 @@ class _InfoScreenState extends State<InfoScreen> {
           ),
           SmoothPageIndicator(
             controller: _controller,
-            count: 4,
+            count: 5,
             effect: WormEffect(
               dotHeight: 10.0,
               dotWidth: 10.0,
@@ -84,8 +90,8 @@ class _InfoScreenState extends State<InfoScreen> {
       children: <Widget>[
         Image.asset(
           imagePath, // Make sure to add your images to the assets folder
-          width: 150,
-          height: 150,
+          width: 350,
+          height: 350,
         ),
         SizedBox(height: 20),
         Text(
