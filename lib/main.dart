@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
 void main() {
   runApp(const MainApp());
@@ -10,70 +11,66 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: IntroScreen(),
+      home: InfoScreen(),
     );
   }
 }
 
-class IntroScreen extends StatefulWidget {
+class InfoScreen extends StatefulWidget {
   @override
-  _IntroScreenState createState() => _IntroScreenState();
+  _InfoScreenState createState() => _InfoScreenState();
 }
 
-class _IntroScreenState extends State<IntroScreen> {
-  @override
-  void initState() {
-    super.initState();
-    _navigateToInfoScreens();
-  }
-
-  _navigateToInfoScreens() async {
-    await Future.delayed(Duration(seconds: 3), () {});
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => InfoScreen()),
-    );
-  }
+class _InfoScreenState extends State<InfoScreen> {
+  final PageController _controller = PageController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Center(
-        child: Image.asset(
-          'assets/logo.png', // Make sure to add your logo image to the assets folder
-          width: 150,
-          height: 150,
-        ),
-      ),
-    );
-  }
-}
-
-class InfoScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: PageView(
-        children: <Widget>[
-          _buildPage(
-            context,
-            'assets/info1.png',
-            'Welcome to our app!',
-            'Here is some introductory information about the app.',
+      body: Column(
+        children: [
+          Expanded(
+            child: PageView(
+              controller: _controller,
+              children: <Widget>[
+                _buildPage(
+                  context,
+                  'assets/logo.png',
+                  'Welkom bij de app',
+                  'Hier krijg je een korte intrductie over de app.',
+                ),
+                _buildPage(
+                  context,
+                  'assets/begin.png',
+                  'Features',
+                  'ALs je last hebt van overstimulatie laat dit weten door op de grote knop te drukken op de home pagina.',
+                ),
+                _buildPage(
+                  context,
+                  'assets/invullen.png',
+                  'Features',
+                  'Vul vervolgens in bij welk onderwerp dit hoorde zoals: stad, werk, sport etc, of voeg een eigen onderwerp toe.',
+                ),
+                _buildPage(
+                  context,
+                  'assets/grafiek.png',
+                  'Get Started',
+                  'Let\'s get started!',
+                  showButton: true,
+                ),
+              ],
+            ),
           ),
-          _buildPage(
-            context,
-            'assets/info2.png',
-            'Features',
-            'Our app provides numerous features to help you achieve your goals.',
+          SmoothPageIndicator(
+            controller: _controller,
+            count: 4,
+            effect: WormEffect(
+              dotHeight: 10.0,
+              dotWidth: 10.0,
+              activeDotColor: Colors.blue,
+            ),
           ),
-          _buildPage(
-            context,
-            'assets/info3.png',
-            'Get Started',
-            'Let\'s get started!',
-            showButton: true,
-          ),
+          SizedBox(height: 20),
         ],
       ),
     );
