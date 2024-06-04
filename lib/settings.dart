@@ -107,7 +107,7 @@ class _SettingsPageState extends State<SettingsPage> {
       case 0:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => OverviewPage()),
+          MaterialPageRoute(builder: (context) => OverzichtPage()),
         );
         break;
       case 1:
@@ -116,7 +116,7 @@ class _SettingsPageState extends State<SettingsPage> {
       case 2:
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => const HomePage()),
+          MaterialPageRoute(builder: (context) => HomePage()),
         );
         break;
     }
