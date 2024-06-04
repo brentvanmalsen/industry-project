@@ -9,7 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  share: ^2.0.4
+
+  share_plus: ^9.0.0
 
 dev_dependencies:
   flutter_test:

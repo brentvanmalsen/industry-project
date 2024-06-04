@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -42,9 +42,10 @@ class HomePage extends StatelessWidget {
                             ),
                             child: const Text('Verstuur link'),
                             onPressed: () {
-                              Navigator.of(context).pop(); // Close the alert
                               Share.share(
-                                  'Geef jouw proces door aan andere, zodat zij beter kunnen begrijpen wat je doormaakt.');
+                                  'check out my website https://example.com',
+                                  subject: 'Look what I made!');
+                              Navigator.of(context).pop(); // Close the alert
                             },
                           ),
                         ],
