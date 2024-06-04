@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:industry_project/overzicht.dart';
 import 'package:industry_project/subject.dart';
 
 // Importeer home.dart
@@ -49,6 +50,15 @@ class MainHomePage extends StatelessWidget {
               );
             },
             child: const Text('Onderwerpen screen'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const OverzichtPage()),
+              );
+            },
+            child: const Text('Go to Overzicht Page'),
           ),
         ],
       ),
