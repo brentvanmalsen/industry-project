@@ -12,6 +12,8 @@ dependencies:
   mailer: ^6.0.0
   sleek_circular_slider: ^2.0.1
 
+  share_plus: ^9.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+// Importeer home.dart
 import 'home.dart';
 
 void main() {
@@ -30,10 +31,12 @@ class MainHomePage extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => HomePage()), // Navigeer naar HomePage
+              MaterialPageRoute(
+                  builder: (context) => HomePage()), // Navigeer naar HomePage
             );
           },
-          child: Text('Temporary button to Home'), // Simpele knop toegevoegd om tijdelijk de rating pagina te weergeven
+          child: Text(
+              'Temporary button to Home'), // Simpele knop toegevoegd om tijdelijk de rating pagina te weergeven
         ),
       ),
     );
