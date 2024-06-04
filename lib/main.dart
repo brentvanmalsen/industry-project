@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:industry_project/onderwerp.dart';
+import 'package:industry_project/subject.dart';
+
 // Importeer home.dart
 import 'home.dart';
 

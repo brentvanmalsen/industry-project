@@ -109,10 +109,10 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
                         height: 35,
                         child: ElevatedButton(
                           style: ButtonStyle(
-                              backgroundColor: WidgetStateProperty.all(
+                              backgroundColor: MaterialStateProperty.all(
                                 const Color.fromARGB(255, 65, 130, 216),
                               ),
-                              shape: WidgetStateProperty.all(
+                              shape: MaterialStateProperty.all(
                                   RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(2)))),
                           onPressed: () {
