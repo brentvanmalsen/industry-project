@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:industry_project/onderwerp.dart';
 // Importeer home.dart
 import 'home.dart';
 
 void main() {
-  runApp(const MainApp());
+  runApp(MainApp());
 }
 
 class MainApp extends StatelessWidget {
@@ -26,18 +27,29 @@ class MainHomePage extends StatelessWidget {
       appBar: AppBar(
         title: Text('Main Page'),
       ),
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => HomePage()), // Navigeer naar HomePage
-            );
-          },
-          child: Text(
-              'Temporary button to Home'), // Simpele knop toegevoegd om tijdelijk de rating pagina te weergeven
-        ),
+      body: Column(
+        children: [
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => HomePage()), // Navigeer naar HomePage
+              );
+            },
+            child: Text(
+                'Temporary button to Home'), // Simpele knop toegevoegd om tijdelijk de rating pagina te weergeven
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const OnderwerpPage()),
+              );
+            },
+            child: const Text('Onderwerpen screen'),
+          ),
+        ],
       ),
     );
   }
