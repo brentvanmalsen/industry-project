@@ -1,11 +1,9 @@
 name: industry_project
 description: "A new Flutter project."
 publish_to: "none"
-publish_to: "none"
 version: 0.1.0
 
 environment:
-  sdk: ">=3.3.3 <4.0.0"
   sdk: ">=3.3.3 <4.0.0"
 
 dependencies:
@@ -13,7 +11,6 @@ dependencies:
     sdk: flutter
   mailer: ^6.0.0
   sleek_circular_slider: ^2.0.1
-
   share_plus: ^9.0.0
   syncfusion_flutter_charts: ^25.2.5
   rive: ^0.13.5
@@ -27,6 +24,5 @@ flutter:
   assets:
     - assets/images/main_button.png
     - assets/images/arrow_back.png
-  #assets for rive
-  assets:
+      #assets for rive
     - assets/flower.riv

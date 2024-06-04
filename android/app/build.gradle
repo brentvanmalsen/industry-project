@@ -22,10 +22,21 @@ if (flutterVersionName == null) {
     flutterVersionName = '1.0'
 }
 
+configurations.all {
+    resolutionStrategy {
+        eachDependency {
+            if ((requested.group == "org.jetbrains.kotlin") && (requested.name.startsWith("kotlin-stdlib"))) {
+                useVersion("1.8.0")
+            }
+        }
+     }
+}
+
 android {
     namespace "com.example.industry_project"
     compileSdk flutter.compileSdkVersion
     ndkVersion flutter.ndkVersion
+    ndkVersion "25.1.8937393"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
