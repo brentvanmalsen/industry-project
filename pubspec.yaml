@@ -29,3 +29,4 @@ flutter:
     - assets/images/arrow_back.png
       #assets for rive
     - assets/flower.riv
+    - .env
