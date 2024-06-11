@@ -62,8 +62,8 @@ class _InfoScreenState extends State<InfoScreen> {
                     _buildPage(
                       context,
                       'assets/starten.png',
-                      'Get Started',
-                      'Let\'s get started!',
+                      'Laten we starten!',
+                      '',
                       showButton: true,
                     ),
                   ],
@@ -72,7 +72,7 @@ class _InfoScreenState extends State<InfoScreen> {
               SmoothPageIndicator(
                 controller: _controller,
                 count: 5,
-                effect: WormEffect(
+                effect: ExpandingDotsEffect(
                   dotHeight: 10.0,
                   dotWidth: 10.0,
                   activeDotColor: Colors.blue,
@@ -155,7 +155,7 @@ class _InfoScreenState extends State<InfoScreen> {
                   MaterialPageRoute(builder: (context) => HomeScreen()),
                 );
               },
-              child: Text('Get Started'),
+              child: Text('Beginnen!'),
             ),
           ),
       ],
