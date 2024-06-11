@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rive/rive.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+// get data from database
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class OverzichtPage extends StatefulWidget {
   const OverzichtPage({super.key});
@@ -19,28 +21,17 @@ class _OverzichtPageState extends State<OverzichtPage> {
   Artboard? _riveArtboard;
   // controller for animation
   StateMachineController? _controller;
+
   // listener from state.
   SMIInput<double>? _state;
 
-  // list of incidents
-  List<_IncidentLog> data = [
-    _IncidentLog('Jan', 1),
-    _IncidentLog('Feb', 2),
-    _IncidentLog('Mar', 4),
-    _IncidentLog('Apr', 3),
-    _IncidentLog('May', 4),
-    _IncidentLog('Jun', 4),
-    _IncidentLog('Jul', 5),
-    _IncidentLog('Aug', 6),
-    _IncidentLog('Sep', 7),
-    _IncidentLog('Oct', 8),
-    _IncidentLog('Nov', 9),
-    _IncidentLog('Dec', 10)
-  ];
+  List<_Incidents> data2 = [];
 
   @override
   void initState() {
     super.initState();
+    // gets the data from the database
+    getData();
     // tries creating the artboard
     try {
       rootBundle.load('assets/flower.riv').then(
@@ -60,6 +51,69 @@ class _OverzichtPageState extends State<OverzichtPage> {
           }
         },
       );
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+// gets the data from the database
+  void getData() async {
+    try {
+      // Get a reference to the Firestore collection
+      CollectionReference users = FirebaseFirestore.instance.collection('1');
+
+      // Get the documents from the collection
+      QuerySnapshot querySnapshot = await users.get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        // Clear the data2 list before adding new data
+        data2.clear();
+
+        // Iterate over each document
+        for (var doc in querySnapshot.docs) {
+          var data = doc.data() as Map<String, dynamic>;
+
+          // Access the 'User' field
+          var user = data['User'] as Map<String, dynamic>;
+
+          // Access the 'Incidents' field within 'User'
+          var incidents = user['Incidents'] as Map<String, dynamic>;
+
+          // Iterate over each incident
+          incidents.forEach((key, value) {
+            // Extract subjects from the 'Subjects' map if it exists and is a map
+            var subjectsMap = value['Subjects'] as Map<String, dynamic>?;
+
+            // Create a list to store subjects
+            List<String> subjectsList = [];
+
+            // Add subjects to the list if they exist
+            if (subjectsMap != null) {
+              // Iterate over each key in the subjectsMap
+              subjectsMap.keys.forEach((subjectKey) {
+                // Add the subject to the list
+                subjectsList.add(subjectsMap[subjectKey].toString());
+              });
+            }
+            // Add the new incident to the data2 list
+            data2.add(_Incidents(
+                value['Date'].toString(), value['Rating'] ?? 0, subjectsList));
+          });
+          // Check if the list is not empty before accessing the last item
+          if (data2.isNotEmpty) {
+            // Get the last item from the list
+            _Incidents lastIncident = data2.last;
+            // Set the state of the flower
+            flowerState = lastIncident.rating;
+            // Set the state of the flower
+            _state?.value = flowerState.toDouble();
+          } else {
+            print('The list is empty');
+          }
+        }
+      } else {
+        print('No documents found');
+      }
     } catch (e) {
       print('Error: $e');
     }
@@ -276,7 +330,14 @@ class _OverzichtPageState extends State<OverzichtPage> {
         //graph
         SfCartesianChart(
           // sets axis
-          primaryXAxis: CategoryAxis(),
+          primaryXAxis: CategoryAxis(
+            labelPlacement: LabelPlacement.onTicks,
+            interval: 1,
+            majorGridLines: MajorGridLines(width: 1),
+            // Customize labels to show only month
+            labelIntersectAction:
+                AxisLabelIntersectAction.hide, // Hide overlapping labels
+          ),
           primaryYAxis: const NumericAxis(
             interval: 1, // Specify the interval between labels
             minimum: 0, // Set the minimum value of the axis
@@ -285,40 +346,34 @@ class _OverzichtPageState extends State<OverzichtPage> {
           // sets up tooltip for more info
           tooltipBehavior: TooltipBehavior(enable: true),
           // creates the graph
-          series: <CartesianSeries<_IncidentLog, String>>[
-            LineSeries<_IncidentLog, String>(
-              dataSource: data,
+          series: <CartesianSeries<_Incidents, String>>[
+            LineSeries<_Incidents, String>(
+              dataSource: data2,
               // Bottom of graph
-              xValueMapper: (_IncidentLog incidentScale, _) =>
-                  incidentScale.month,
+              xValueMapper: (_Incidents incidentScale, _) {
+                String date = incidentScale.date;
+                String month =
+                    date.split(' ')[0]; // Extract the first word (month)
+                return month;
+              },
               // Side of graph
-              yValueMapper: (_IncidentLog incidentScale, _) =>
-                  incidentScale.incidentScale,
-              name: 'incidentScale',
+              yValueMapper: (_Incidents incidentScale, _) =>
+                  incidentScale.rating,
+              name: 'Incident',
               //Dots on the line
               markerSettings: MarkerSettings(isVisible: true),
             ),
           ],
         ),
-        SizedBox(height: 20),
-        // testing button
-        ElevatedButton(
-            onPressed: () {
-              // sets the state of the flower
-              setState(() {
-                flowerState++;
-                _state?.value = flowerState.toDouble();
-              });
-            },
-            child: Text('increase')),
       ]),
     );
   }
 }
 
-class _IncidentLog {
-  _IncidentLog(this.month, this.incidentScale);
+class _Incidents {
+  _Incidents(this.date, this.rating, this.subjects);
 
-  final String month;
-  final double incidentScale;
+  final String date;
+  final int rating;
+  final List<String> subjects;
 }
