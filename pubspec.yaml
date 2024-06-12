@@ -13,6 +13,7 @@ dependencies:
   mailer: ^6.0.0
   sleek_circular_slider: ^2.0.1
   share_plus: ^9.0.0
+  smooth_page_indicator: ^1.1.0
   syncfusion_flutter_charts: ^25.2.5
   rive: ^0.13.5
 
