@@ -4,6 +4,7 @@ publish_to: "none"
 version: 0.1.0
 
 environment:
+
   sdk: ">=3.3.3 <4.0.0"
 
 dependencies:
@@ -21,6 +22,7 @@ dev_dependencies:
   flutter_lints: ^3.0.0
 
 flutter:
+  uses-material-design: true
   assets:
     - assets/images/main_button.png
     - assets/images/arrow_back.png
