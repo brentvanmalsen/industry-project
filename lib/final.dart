@@ -1,11 +1,22 @@
 import 'package:flutter/material.dart';
 
-class FinalPage extends StatelessWidget {
-  final String subject; // Placeholder voor het onderwerp
+void main() {
+  runApp(MaterialApp(
+    home: FinalPage(subject: ['placeholder'], number: 0), // Voorbeeldwaarden
+  ));
+}
+
+class FinalPage extends StatefulWidget {
+  final List<String> subject; // Placeholder voor het onderwerp
   final int number; // Placeholder voor het cijfer
 
   FinalPage({required this.subject, required this.number});
 
+  @override
+  State<FinalPage> createState() => _FinalPageState();
+}
+
+class _FinalPageState extends State<FinalPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,8 +60,11 @@ class FinalPage extends StatelessWidget {
             Column(
               children: [
                 Text(
-                  subject,
-                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                  widget.subject.join(', '),
+                  style: TextStyle(
+                      fontSize: 28,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black),
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 20),
@@ -63,7 +77,7 @@ class FinalPage extends StatelessWidget {
                   ),
                   child: Center(
                     child: Text(
-                      '$number',
+                      '${widget.number}',
                       style: TextStyle(fontSize: 32, color: Colors.white),
                     ),
                   ),
@@ -126,11 +140,4 @@ class NextPage extends StatelessWidget {
       ),
     );
   }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: FinalPage(
-        subject: 'Onderwerp Placeholder', number: 5), // Voorbeeldwaarden
-  ));
 }
