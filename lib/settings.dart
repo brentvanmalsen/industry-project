@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:industry_project/overview.dart';
 import 'package:mailer/mailer.dart';
 import 'package:mailer/smtp_server.dart';
 import 'home.dart'; // Import HomePage
-import 'overview.dart'; // Import OverviewPage
 
 void main() {
   runApp(MaterialApp(
@@ -249,7 +249,8 @@ class _SettingsPageState extends State<SettingsPage> {
         ),
       ),
       bottomNavigationBar: Stack(
-        alignment: FractionalOffset.center,
+        alignment: Alignment.center,
+        clipBehavior: Clip.none, // Ensure the button can overflow the container
         children: [
           Container(
             height: 60,
@@ -318,7 +319,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   color: Colors.blue,
                   shape: BoxShape.circle,
                   boxShadow: [
-                    const BoxShadow(
+                    BoxShadow(
                       color: Colors.black26,
                       blurRadius: 10,
                       offset: Offset(0, 4),
