@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:industry_project/home.dart';
+import 'package:industry_project/subject.dart';
 import 'package:sleek_circular_slider/sleek_circular_slider.dart';
 
 class RatingPage extends StatefulWidget {
@@ -21,7 +23,12 @@ class _RatingPageState extends State<RatingPage> {
           ),
           iconSize: 70,
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => HomePage(),
+              ),
+            );
           },
         ),
       ),
@@ -43,7 +50,7 @@ class _RatingPageState extends State<RatingPage> {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  'Gebruik de slider van 0 tot 100% om aan te geven hoeveel je op dit moment wordt beïnvloed door overstimulatie.',
+                  'Gebruik de slider van 0 tot 10 om aan te geven hoeveel je op dit moment wordt beïnvloed door overstimulatie.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 15,
@@ -58,6 +65,17 @@ class _RatingPageState extends State<RatingPage> {
               width: 240,
               height: 240,
               child: SleekCircularSlider(
+                innerWidget: (double value) {
+                  return Center(
+                    child: Text(
+                      value.toStringAsFixed(0),
+                      style: const TextStyle(
+                        fontSize: 40,
+                        fontWeight: FontWeight.w300,
+                      ),
+                    ),
+                  );
+                },
                 appearance: CircularSliderAppearance(
                   startAngle: 270,
                   angleRange: 360,
@@ -71,7 +89,7 @@ class _RatingPageState extends State<RatingPage> {
                   ),
                 ),
                 min: 0,
-                max: 100,
+                max: 10,
                 initialValue: 0,
                 onChange: (double value) {
                   setState(() {
@@ -86,8 +104,13 @@ class _RatingPageState extends State<RatingPage> {
             margin: EdgeInsets.only(bottom: 20),
             child: ElevatedButton(
               onPressed: () {
-                // Hier wordt de waarde van _rating afgerond en geprint in de terminal
-                print('De ingevoerde rating is: ${_rating.round()}');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        OnderwerpPage(rating: _rating.round().toDouble()),
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(
                 fixedSize: Size(307, 53),

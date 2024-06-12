@@ -1,13 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:industry_project/overview.dart';
+import 'package:industry_project/rating.dart';
 
 void onderwerp() {
-  runApp(const OnderwerpPage());
+  runApp(const OnderwerpPage(rating: 0));
 }
 
 bool pressedButton = false;
 
 class OnderwerpPage extends StatefulWidget {
-  const OnderwerpPage({super.key});
+  final double rating;
+
+  const OnderwerpPage({super.key, required this.rating});
 
   @override
   _OnderwerpPageState createState() => _OnderwerpPageState();
@@ -22,14 +26,46 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            icon: const Image(
+              image: AssetImage('assets/images/arrow_back.png'),
+              height: 40,
+              width: 40,
+            ),
+            iconSize: 70,
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => RatingPage(),
+                ),
+              );
+            },
+          ),
+          actions: <Widget>[
+            IconButton(
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(
+                const Color.fromARGB(255, 65, 130, 216),
+              )),
+              icon: const Icon(
+                Icons.question_mark_rounded,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                //TODO Add onPressed code here!
+              },
+            ),
+          ],
+        ),
         body: Column(
           children: [
-            const SizedBox(height: 70),
-            Center(
+            const Center(
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Expanded(
+                  Expanded(
                     child: Center(
                       child: Text(
                         'Onderwerpen',
@@ -41,22 +77,26 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
                       ),
                     ),
                   ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: IconButton(
-                      style: ButtonStyle(
-                        backgroundColor: MaterialStateProperty.all(
-                          const Color.fromARGB(255, 65, 130, 216),
-                        ),
-                      ),
-                      onPressed: () {},
-                      icon: const Icon(
-                        Icons.question_mark_outlined,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
                 ],
+              ),
+            ),
+            const SizedBox(height: 25),
+            // Display the rating
+            Container(
+              height: 50,
+              width: 50,
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                borderRadius: BorderRadius.circular(50.0),
+              ),
+              child: Text(
+                widget.rating.toStringAsFixed(0),
+                style: const TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                ),
               ),
             ),
             const SizedBox(height: 25),
@@ -102,7 +142,7 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      const SizedBox(width: 20),
+                      const SizedBox(width: 25),
                       // Button
                       SizedBox(
                         width: 50,
@@ -119,7 +159,9 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => const OnderwerpPage(),
+                                builder: (context) => const OnderwerpPage(
+                                  rating: 0,
+                                ),
                               ),
                             );
                           },
@@ -144,7 +186,56 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 45),
+                  const SizedBox(height: 20),
+                  // Third row with 3 buttons
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: <Widget>[
+                      const SizedBox(width: 25),
+                      // Button
+                      SizedBox(
+                        width: 50,
+                        height: 35,
+                        child: ElevatedButton(
+                          style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                const Color.fromARGB(255, 65, 130, 216),
+                              ),
+                              shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(2)))),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const OnderwerpPage(
+                                  rating: 0,
+                                ),
+                              ),
+                            );
+                          },
+                          child: const Text(
+                            '+',
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 255, 255, 255),
+                            ),
+                          ),
+                          // Text
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      // Text
+                      const Text(
+                        'Voeg nieuw onderwerp toe',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 50),
                   // Textfield
                   const SizedBox(
                       width: 300,
@@ -162,6 +253,35 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
                           ),
                         ],
                       )),
+                  const SizedBox(height: 100),
+                  Container(
+                    margin: EdgeInsets.only(bottom: 20),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const OverzichtPage(),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        fixedSize: Size(307, 53),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        backgroundColor: Color.fromARGB(255, 65, 130, 216),
+                      ),
+                      child: const Text(
+                        'Volgende',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),

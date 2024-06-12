@@ -54,15 +54,6 @@ class MainHomePage extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => const OnderwerpPage()),
-              );
-            },
-            child: const Text('Onderwerpen screen'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
                 MaterialPageRoute(builder: (context) => const OverzichtPage()),
               );
             },
