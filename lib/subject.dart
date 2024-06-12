@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:industry_project/graph.dart';
 import 'package:industry_project/overview.dart';
 import 'package:industry_project/rating.dart';
 
@@ -226,7 +227,7 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
                       const SizedBox(width: 8),
                       // Text
                       const Text(
-                        'Voeg nieuw onderwerp toe',
+                        'Voeg locatie toe',
                         style: TextStyle(
                           fontSize: 15,
                           fontFamily: 'Roboto',
@@ -261,7 +262,7 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const OverzichtPage(),
+                            builder: (context) => const GrafiekPage(),
                           ),
                         );
                       },
