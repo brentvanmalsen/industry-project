@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:industry_project/overview.dart';
+import 'package:industry_project/final.dart';
 import 'package:industry_project/rating.dart';
 
 void onderwerp() {
@@ -21,6 +21,8 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
   bool pressedButton = false;
   // List to hold the pressed state of each button
   List<bool> buttonStates = List<bool>.generate(8, (index) => false);
+  // List to hold the selected topics
+  List<String> selectedTopics = [];
 
   @override
   Widget build(BuildContext context) {
@@ -226,7 +228,7 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
                       const SizedBox(width: 8),
                       // Text
                       const Text(
-                        'Voeg nieuw onderwerp toe',
+                        'Voeg locatie toe',
                         style: TextStyle(
                           fontSize: 15,
                           fontFamily: 'Roboto',
@@ -261,7 +263,10 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => const OverzichtPage(),
+                            builder: (context) => FinalPage(
+                              subject: selectedTopics,
+                              number: widget.rating.toInt(),
+                            ),
                           ),
                         );
                       },
@@ -306,6 +311,13 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
         onPressed: () {
           setState(() {
             buttonStates[index] = !buttonStates[index];
+            if (buttonStates[index]) {
+              // Add the selected topic to the list
+              selectedTopics.add(text);
+            } else {
+              // Remove the unselected topic from the list
+              selectedTopics.remove(text);
+            }
           });
         },
         child: Text(
