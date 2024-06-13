@@ -27,7 +27,7 @@ class _OverzichtPageState extends State<OverzichtPage> {
     super.initState();
     // gets the data from the database
     getData();
-    _displayData = _yearData;
+    _displayData = data2;
     try {
       rootBundle.load('assets/flower.riv').then(
         (data) async {
@@ -47,94 +47,24 @@ class _OverzichtPageState extends State<OverzichtPage> {
     }
   }
 
+// todo: implement filter on on subjects
+// todo: implement the filter
   void _updateFilter(String filter) {
     setState(() {
       if (filter == 'Day') {
-        _displayData = [_IncidentLog('Day', 1)];
+        _displayData = [];
       } else if (filter == 'Week') {
-        _displayData = [
-          _IncidentLog('Week 1', 2),
-          _IncidentLog('Week 2', 3),
-          _IncidentLog('Week 3', 4),
-          _IncidentLog('Week 4', 5)
-        ];
+        _displayData = [];
       } else if (filter == 'Month') {
-        _displayData = [
-          _IncidentLog('Jan', 1),
-          _IncidentLog('Feb', 2),
-          _IncidentLog('Mar', 4),
-          _IncidentLog('Apr', 3)
-        ];
+        _displayData = [];
       } else if (filter == 'Year') {
-        _displayData = _yearData;
+        _displayData = data2;
       }
     });
   }
 
 // gets the data from the database
-  void getData() async {
-    try {
-      // Get a reference to the Firestore collection
-      CollectionReference users = FirebaseFirestore.instance.collection('1');
-
-      // Get the documents from the collection
-      QuerySnapshot querySnapshot = await users.get();
-
-      if (querySnapshot.docs.isNotEmpty) {
-        // Clear the data2 list before adding new data
-        data2.clear();
-
-        // Iterate over each document
-        for (var doc in querySnapshot.docs) {
-          var data = doc.data() as Map<String, dynamic>;
-
-          // Access the 'User' field
-          var user = data['User'] as Map<String, dynamic>;
-
-          // Access the 'Incidents' field within 'User'
-          var incidents = user['Incidents'] as Map<String, dynamic>;
-
-          // Iterate over each incident
-          incidents.forEach((key, value) {
-            // Extract subjects from the 'Subjects' map if it exists and is a map
-            var subjectsMap = value['Subjects'] as Map<String, dynamic>?;
-
-            // Create a list to store subjects
-            List<String> subjectsList = [];
-
-            // Add subjects to the list if they exist
-            if (subjectsMap != null) {
-              // Iterate over each key in the subjectsMap
-              subjectsMap.keys.forEach((subjectKey) {
-                // Add the subject to the list
-                subjectsList.add(subjectsMap[subjectKey].toString());
-              });
-            }
-            // Add the new incident to the data2 list
-            data2.add(_Incidents(
-                value['Date'].toString(), value['Rating'] ?? 0, subjectsList));
-          });
-          // Check if the list is not empty before accessing the last item
-          if (data2.isNotEmpty) {
-            // Get the last item from the list
-            _Incidents lastIncident = data2.last;
-            // Set the state of the flower
-            flowerState = lastIncident.rating;
-            // Set the state of the flower
-            _state?.value = flowerState.toDouble();
-          } else {
-            print('The list is empty');
-          }
-        }
-      } else {
-        print('No documents found');
-      }
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
-
-// gets the data from the database
+// todo: get data in right order.
   void getData() async {
     try {
       // Get a reference to the Firestore collection
@@ -462,13 +392,13 @@ class _OverzichtPageState extends State<OverzichtPage> {
                               maximum: 10,
                             ),
                             tooltipBehavior: TooltipBehavior(enable: true),
-                            series: <CartesianSeries<_IncidentLog, String>>[
-                              LineSeries<_IncidentLog, String>(
+                            series: <CartesianSeries<_Incidents, String>>[
+                              LineSeries<_Incidents, String>(
                                 dataSource: _displayData,
-                                xValueMapper: (_IncidentLog incidentScale, _) =>
-                                    incidentScale.month,
-                                yValueMapper: (_IncidentLog incidentScale, _) =>
-                                    incidentScale.incidentScale,
+                                xValueMapper: (_Incidents incidentScale, _) =>
+                                    incidentScale.date,
+                                yValueMapper: (_Incidents incidentScale, _) =>
+                                    incidentScale.rating,
                                 name: 'incidentScale',
                                 markerSettings: MarkerSettings(isVisible: true),
                               ),
