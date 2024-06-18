@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rive/rive.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
-// get data from database
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class OverzichtPage extends StatefulWidget {
   const OverzichtPage({Key? key}) : super(key: key);
@@ -16,16 +16,14 @@ class _OverzichtPageState extends State<OverzichtPage> {
   int flowerState = 0;
   Artboard? _riveArtboard;
   StateMachineController? _controller;
-
   SMIInput<double>? _state;
-
   List<_Incidents> data2 = [];
   List<_Incidents> _displayData = [];
   bool _showingFlower = true;
+
   @override
   void initState() {
     super.initState();
-    // gets the data from the database
     getData();
     _displayData = data2;
     try {
@@ -47,8 +45,6 @@ class _OverzichtPageState extends State<OverzichtPage> {
     }
   }
 
-// todo: implement filter on on subjects
-// todo: implement the filter
   void _updateFilter(String filter) {
     setState(() {
       if (filter == 'Day') {
@@ -63,57 +59,47 @@ class _OverzichtPageState extends State<OverzichtPage> {
     });
   }
 
-// gets the data from the database
-// todo: get data in right order.
   void getData() async {
     try {
-      // Get a reference to the Firestore collection
       CollectionReference users = FirebaseFirestore.instance.collection('1');
-
-      // Get the documents from the collection
       QuerySnapshot querySnapshot = await users.get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        // Clear the data2 list before adding new data
         data2.clear();
 
-        // Iterate over each document
         for (var doc in querySnapshot.docs) {
           var data = doc.data() as Map<String, dynamic>;
-
-          // Access the 'User' field
           var user = data['User'] as Map<String, dynamic>;
-
-          // Access the 'Incidents' field within 'User'
           var incidents = user['Incidents'] as Map<String, dynamic>;
+          List<_Incidents> tempIncidents = [];
+          var dateFormat = DateFormat('MMM dd, yyyy');
 
-          // Iterate over each incident
           incidents.forEach((key, value) {
-            // Extract subjects from the 'Subjects' map if it exists and is a map
             var subjectsMap = value['Subjects'] as Map<String, dynamic>?;
-
-            // Create a list to store subjects
             List<String> subjectsList = [];
 
-            // Add subjects to the list if they exist
             if (subjectsMap != null) {
-              // Iterate over each key in the subjectsMap
               subjectsMap.keys.forEach((subjectKey) {
-                // Add the subject to the list
                 subjectsList.add(subjectsMap[subjectKey].toString());
               });
             }
-            // Add the new incident to the data2 list
-            data2.add(_Incidents(
-                value['Date'].toString(), value['Rating'] ?? 0, subjectsList));
+
+            DateTime incidentDate = dateFormat.parse(value['Date'].toString());
+            String month = DateFormat('MMM').format(incidentDate);
+
+            tempIncidents
+                .add(_Incidents(month, value['Rating'] ?? 0, subjectsList));
           });
-          // Check if the list is not empty before accessing the last item
+
+          tempIncidents.sort((a, b) => DateFormat('MMM')
+              .parse(a.date)
+              .month
+              .compareTo(DateFormat('MMM').parse(b.date).month));
+          data2.addAll(tempIncidents);
+
           if (data2.isNotEmpty) {
-            // Get the last item from the list
             _Incidents lastIncident = data2.last;
-            // Set the state of the flower
             flowerState = lastIncident.rating;
-            // Set the state of the flower
             _state?.value = flowerState.toDouble();
           } else {
             print('The list is empty');
@@ -385,7 +371,12 @@ class _OverzichtPageState extends State<OverzichtPage> {
                         Container(
                           height: 300,
                           child: SfCartesianChart(
-                            primaryXAxis: CategoryAxis(),
+                            primaryXAxis: const CategoryAxis(
+                              edgeLabelPlacement: EdgeLabelPlacement
+                                  .none, // Remove any label shift
+                              labelAlignment: LabelAlignment
+                                  .start, // Align labels to the start
+                            ),
                             primaryYAxis: const NumericAxis(
                               interval: 1,
                               minimum: 0,
@@ -408,17 +399,6 @@ class _OverzichtPageState extends State<OverzichtPage> {
                       ],
                     ),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    flowerState++;
-                    _state?.value = flowerState.toDouble();
-                  });
-                },
-                child: Text('increase'),
-              ),
-              SizedBox(height: 20),
-              // Page Indicator
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
