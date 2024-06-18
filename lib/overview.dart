@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:industry_project/home.dart';
+import 'package:industry_project/settings.dart';
 import 'package:rive/rive.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -20,6 +22,35 @@ class _OverzichtPageState extends State<OverzichtPage> {
   List<_Incidents> data2 = [];
   List<_Incidents> _displayData = [];
   bool _showingFlower = true;
+
+  int _selectedIndex = 0; // Set default selected index to 1 (Overview)
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    switch (index) {
+      case 0:
+        Navigator.push(
+          context as BuildContext,
+          MaterialPageRoute(builder: (context) => OverzichtPage()),
+        );
+        break;
+      case 1:
+        Navigator.push(
+          context as BuildContext,
+          MaterialPageRoute(builder: (context) => SettingsPage()),
+        );
+        break;
+
+      case 2:
+        Navigator.push(
+          context as BuildContext,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+        break;
+    }
+  }
 
   @override
   void initState() {
@@ -425,6 +456,90 @@ class _OverzichtPageState extends State<OverzichtPage> {
             ],
           ),
         ),
+      ),
+      bottomNavigationBar: Stack(
+        alignment: Alignment.center,
+        clipBehavior: Clip.none, // Ensure the button can overflow the container
+        children: [
+          Container(
+            height: 60,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 8,
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Expanded(
+                  child: InkWell(
+                    onTap: () => _onItemTapped(0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(Icons.list,
+                            color: _selectedIndex == 0
+                                ? Colors.blue
+                                : Colors.grey),
+                        Text('Overzichten',
+                            style: TextStyle(
+                                color: _selectedIndex == 0
+                                    ? Colors.blue
+                                    : Colors.grey)),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 60), // Spacer for the home button
+                Expanded(
+                  child: InkWell(
+                    onTap: () => _onItemTapped(1),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(Icons.settings,
+                            color: _selectedIndex == 1
+                                ? Colors.blue
+                                : Colors.grey),
+                        Text('Instellingen',
+                            style: TextStyle(
+                                color: _selectedIndex == 1
+                                    ? Colors.blue
+                                    : Colors.grey)),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: 10, // Adjust the position of the home button
+            child: InkWell(
+              onTap: () => _onItemTapped(2),
+              child: Container(
+                width: 70,
+                height: 70,
+                decoration: const BoxDecoration(
+                  color: Colors.blue,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 10,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: const Icon(Icons.home, color: Colors.white, size: 40),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

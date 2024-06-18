@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:industry_project/final.dart';
 import 'package:industry_project/rating.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 void onderwerp() {
   runApp(const OnderwerpPage(rating: 0));
