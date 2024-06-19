@@ -60,7 +60,10 @@ class _FinalPageState extends State<FinalPage> {
             Column(
               children: [
                 Text(
-                  widget.subject.join(', '),
+                  widget.subject.map((subject) {
+                    return subject
+                        .split(': ')[1]; // Split and take the second part
+                  }).join(', '),
                   style: TextStyle(
                       fontSize: 28,
                       fontWeight: FontWeight.bold,

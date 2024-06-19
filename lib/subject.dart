@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 bool pressedButton = false;
-int incidents = 0;
 
 class OnderwerpPage extends StatefulWidget {
   final double rating;
@@ -20,20 +19,6 @@ void onderwerp() {
   runApp(const OnderwerpPage(rating: 0));
 }
 
-// get data from data base and set incidents to the amount of incidents
-void getIncidents() {
-  FirebaseFirestore.instance.collection('1').get().then((querySnapshot) {
-    querySnapshot.docs.forEach((doc) {
-      var user = doc.data()['User'];
-      if (user != null && user['Incidents'] != null) {
-        incidents = user['Incidents'].length;
-      }
-    });
-  }).catchError((error) {
-    print('Error getting incidents: $error');
-  });
-}
-
 class _OnderwerpPageState extends State<OnderwerpPage> {
   bool pressedButton = false;
   // List to hold the pressed state of each button
@@ -41,10 +26,48 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
   // List to hold the selected topics
   List<String> selectedTopics = [];
 
+  TextEditingController messageController = TextEditingController();
   @override
   void initState() {
-    getIncidents();
     super.initState();
+  }
+
+  void addIncident() async {
+    try {
+      CollectionReference collection =
+          FirebaseFirestore.instance.collection('1');
+      QuerySnapshot querySnapshot = await collection.get();
+      DocumentSnapshot documentSnapshot = querySnapshot.docs.first;
+      Map<String, dynamic> document =
+          documentSnapshot.data() as Map<String, dynamic>;
+
+      Map<String, dynamic> user = document['User'];
+
+      int totalIncidents = user['Incidents'].length;
+      String newIncidentKey = 'Incident${totalIncidents + 1}';
+
+      Map<String, dynamic> newIncident = {
+        'Date': DateFormat.yMMMd().format(DateTime.now()),
+        'Location': '[0° N, 0° E]',
+        'Message': messageController.text,
+        'Rating': widget.rating,
+        'Subjects': Map.fromIterable(selectedTopics,
+            key: (topic) => topic.split(': ')[0],
+            value: (topic) => topic.split(': ')[1]),
+      };
+
+      print('Incident data: $newIncident');
+
+      // Add the new incident to the user's incidents list
+      user['Incidents'][newIncidentKey] = newIncident;
+
+      // Update the user document in Firestore
+      await collection.doc(documentSnapshot.id).update({'User': user});
+
+      print('Incident added successfully');
+    } catch (error) {
+      print('Error adding incident: $error');
+    }
   }
 
   @override
@@ -262,13 +285,14 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
                   ),
                   const SizedBox(height: 50),
                   // Textfield
-                  const SizedBox(
+                  SizedBox(
                       width: 300,
                       height: 120,
                       child: Column(
                         children: <Widget>[
                           Expanded(
                             child: TextField(
+                              controller: messageController,
                               maxLines: 10,
                               decoration: InputDecoration(
                                 border: OutlineInputBorder(),
@@ -284,12 +308,7 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
                     child: ElevatedButton(
                       onPressed: () {
                         // Add things to database.
-                        FirebaseFirestore.instance.collection('ratings').add({
-                          'rating': widget.rating,
-                          'topics': selectedTopics,
-                          'date':
-                              DateFormat('yyyy-MM-dd').format(DateTime.now()),
-                        });
+                        addIncident();
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -342,11 +361,11 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
           setState(() {
             buttonStates[index] = !buttonStates[index];
             if (buttonStates[index]) {
-              // Add the selected topic to the list
-              selectedTopics.add(text);
+              // Add the selected topic to the list in the format 'SubjectX: Topic'
+              selectedTopics.add('Subject${selectedTopics.length + 1}: $text');
             } else {
               // Remove the unselected topic from the list
-              selectedTopics.remove(text);
+              selectedTopics.remove('Subject${selectedTopics.length}: $text');
             }
           });
         },
