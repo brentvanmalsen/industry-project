@@ -4,11 +4,8 @@ import 'package:industry_project/rating.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
-void onderwerp() {
-  runApp(const OnderwerpPage(rating: 0));
-}
-
 bool pressedButton = false;
+int incidents = 0;
 
 class OnderwerpPage extends StatefulWidget {
   final double rating;
@@ -19,12 +16,32 @@ class OnderwerpPage extends StatefulWidget {
   _OnderwerpPageState createState() => _OnderwerpPageState();
 }
 
+void onderwerp() {
+  runApp(const OnderwerpPage(rating: 0));
+}
+
+// get data from data base and set incidents to the amount of incidents
+void getIncidents() {
+  FirebaseFirestore.instance.collection('1').get().then((querySnapshot) {
+    querySnapshot.docs.forEach((doc) {
+      print('data: $doc ');
+      // incidents = doc['incidents'].length;
+    });
+  });
+}
+
 class _OnderwerpPageState extends State<OnderwerpPage> {
   bool pressedButton = false;
   // List to hold the pressed state of each button
   List<bool> buttonStates = List<bool>.generate(8, (index) => false);
   // List to hold the selected topics
   List<String> selectedTopics = [];
+
+  @override
+  void initState() {
+    getIncidents();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -262,6 +279,13 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
                     margin: EdgeInsets.only(bottom: 20),
                     child: ElevatedButton(
                       onPressed: () {
+                        // Add things to database.
+                        FirebaseFirestore.instance.collection('ratings').add({
+                          'rating': widget.rating,
+                          'topics': selectedTopics,
+                          'date':
+                              DateFormat('yyyy-MM-dd').format(DateTime.now()),
+                        });
                         Navigator.push(
                           context,
                           MaterialPageRoute(

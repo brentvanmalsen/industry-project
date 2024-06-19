@@ -2,8 +2,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:industry_project/firebase_options.dart';
-import 'package:industry_project/overview.dart';
-import 'package:industry_project/subject.dart';
 
 // Importeer home.dart
 import 'home.dart';
@@ -49,15 +47,6 @@ class MainHomePage extends StatelessWidget {
             },
             child: Text(
                 'Temporary button to Home'), // Simpele knop toegevoegd om tijdelijk de rating pagina te weergeven
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const OverzichtPage()),
-              );
-            },
-            child: const Text('Go to Overzicht Page'),
           ),
         ],
       ),
