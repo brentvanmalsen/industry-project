@@ -24,9 +24,13 @@ void onderwerp() {
 void getIncidents() {
   FirebaseFirestore.instance.collection('1').get().then((querySnapshot) {
     querySnapshot.docs.forEach((doc) {
-      print('data: $doc ');
-      // incidents = doc['incidents'].length;
+      var user = doc.data()['User'];
+      if (user != null && user['Incidents'] != null) {
+        incidents = user['Incidents'].length;
+      }
     });
+  }).catchError((error) {
+    print('Error getting incidents: $error');
   });
 }
 
