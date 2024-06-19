@@ -1,17 +1,14 @@
 name: industry_project
 description: "A new Flutter project."
 publish_to: "none"
-publish_to: "none"
 version: 0.1.0
 
 environment:
-
   sdk: ">=3.3.3 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  smooth_page_indicator: ^1.1.0
   mailer: ^6.0.0
   sleek_circular_slider: ^2.0.1
   share_plus: ^9.0.0
