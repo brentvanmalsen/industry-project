@@ -397,13 +397,25 @@ class _NewPageState extends State<NewPage> {
           content: Text('Wil je gebruiker "${users[index]}" verwijderen?'),
           actions: <Widget>[
             TextButton(
-              child: Text('Annuleren'),
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.blue,
+              ),
+              child: Text(
+                'Annuleren',
+                style: TextStyle(color: Colors.white),
+              ),
               onPressed: () {
                 Navigator.of(context).pop(); // Sluit het dialoogvenster
               },
             ),
             TextButton(
-              child: Text('Verwijderen'),
+              style: TextButton.styleFrom(
+                backgroundColor: Colors.blue,
+              ),
+              child: Text(
+                'Verwijderen',
+                style: TextStyle(color: Colors.white),
+              ),
               onPressed: () {
                 setState(() {
                   users.removeAt(index); // Verwijder de gebruiker
