@@ -214,26 +214,21 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Text('Bekijk uitgenodigde',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                  const Text(
-                      'Bekijk de mensen die je hebt uitgenodigd en beheer de lijst.'),
-                  const SizedBox(height: 10),
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF4182DB),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'Bekijk uitgenodigde',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
                       ),
-                      onPressed: () {
-                        _navigateToInvitedPage(context);
-                      },
-                      child: const Text(
-                        'Uitgenodigde bekijken',
-                        style: TextStyle(color: Colors.white),
+                      GestureDetector(
+                        onTap: () {
+                          _navigateToInvitedPage(context);
+                        },
+                        child: Icon(Icons.arrow_forward),
                       ),
-                    ),
+                    ],
                   ),
                 ],
               ),
@@ -392,11 +387,34 @@ class _NewPageState extends State<NewPage> {
     'Rob Verheijen'
   ];
 
-  // Function to remove a user
+  // Function to remove a user with confirmation dialog
   void _removeUser(int index) {
-    setState(() {
-      users.removeAt(index);
-    });
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Weet je het zeker?'),
+          content: Text('Wil je gebruiker "${users[index]}" verwijderen?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Annuleren'),
+              onPressed: () {
+                Navigator.of(context).pop(); // Sluit het dialoogvenster
+              },
+            ),
+            TextButton(
+              child: Text('Verwijderen'),
+              onPressed: () {
+                setState(() {
+                  users.removeAt(index); // Verwijder de gebruiker
+                });
+                Navigator.of(context).pop(); // Sluit het dialoogvenster
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -410,7 +428,7 @@ class _NewPageState extends State<NewPage> {
         itemBuilder: (context, index) {
           return Padding(
             padding:
-                const EdgeInsets.only(left: 25.0), // Adjust the left padding
+                const EdgeInsets.only(left: 25.0), // Pas de linker padding aan
             child: AnimatedSwitcher(
               duration: Duration(milliseconds: 500),
               transitionBuilder: (Widget child, Animation<double> animation) {
@@ -420,7 +438,8 @@ class _NewPageState extends State<NewPage> {
                 );
               },
               child: ListTile(
-                key: ValueKey<String>(users[index]), // Key for AnimatedSwitcher
+                key:
+                    ValueKey<String>(users[index]), // Key voor AnimatedSwitcher
                 title: Text(
                   users[index],
                   style: TextStyle(fontWeight: FontWeight.w600),
