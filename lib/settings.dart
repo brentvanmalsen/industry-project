@@ -122,6 +122,13 @@ class _SettingsPageState extends State<SettingsPage> {
     }
   }
 
+  void _navigateToInvitedPage(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => NewPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -207,6 +214,40 @@ class _SettingsPageState extends State<SettingsPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const Text('Bekijk uitgenodigde',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const Text(
+                      'Bekijk de mensen die je hebt uitgenodigd en beheer de lijst.'),
+                  const SizedBox(height: 10),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF4182DB),
+                      ),
+                      onPressed: () {
+                        _navigateToInvitedPage(context);
+                      },
+                      child: const Text(
+                        'Uitgenodigde bekijken',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            Container(
+              padding: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: const Color.fromARGB(31, 133, 133, 133),
+                borderRadius: BorderRadius.circular(8.0),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
                   const Text('Feedback',
                       style:
                           TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
@@ -218,14 +259,11 @@ class _SettingsPageState extends State<SettingsPage> {
                     maxLines: 5,
                     decoration: InputDecoration(
                       hintText: 'Schrijf je feedback hier...',
-                      filled: true, // Zorg ervoor dat het tekstvak gevuld is
-                      fillColor:
-                          Colors.white, // Achtergrondkleur van het tekstvak
+                      filled: true,
+                      fillColor: Colors.white,
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(
-                            10.0), // Ronde hoeken van 10px
-                        borderSide: BorderSide
-                            .none, // Verwijder de rand van het tekstvak
+                        borderRadius: BorderRadius.circular(10.0),
+                        borderSide: BorderSide.none,
                       ),
                     ),
                   ),
@@ -234,16 +272,14 @@ class _SettingsPageState extends State<SettingsPage> {
                     width: double.infinity,
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(
-                            0xFF4182DB), // Achtergrondkleur van de knop
+                        backgroundColor: const Color(0xFF4182DB),
                       ),
                       onPressed: () {
                         sendFeedback(context);
                       },
                       child: const Text(
                         'Verzend Feedback',
-                        style: TextStyle(
-                            color: Colors.white), // Tekstkleur van de knop
+                        style: TextStyle(color: Colors.white),
                       ),
                     ),
                   ),
@@ -255,7 +291,7 @@ class _SettingsPageState extends State<SettingsPage> {
       ),
       bottomNavigationBar: Stack(
         alignment: Alignment.center,
-        clipBehavior: Clip.none, // Ensure the button can overflow the container
+        clipBehavior: Clip.none,
         children: [
           Container(
             height: 60,
@@ -314,7 +350,7 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
           Positioned(
-            bottom: 10, // Adjust the position of the home button
+            bottom: 10,
             child: InkWell(
               onTap: () => _onItemTapped(2),
               child: Container(
@@ -336,6 +372,67 @@ class _SettingsPageState extends State<SettingsPage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class NewPage extends StatefulWidget {
+  @override
+  _NewPageState createState() => _NewPageState();
+}
+
+class _NewPageState extends State<NewPage> {
+  // Dummy user data
+  List<String> users = [
+    'Jorg van de Rijdt',
+    'Brent van Malsen',
+    'Jasper van den Heuvel',
+    'Koen Hilbrands',
+    'Rob Verheijen'
+  ];
+
+  // Function to remove a user
+  void _removeUser(int index) {
+    setState(() {
+      users.removeAt(index);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Mijn uitgenodigde'),
+      ),
+      body: ListView.builder(
+        itemCount: users.length,
+        itemBuilder: (context, index) {
+          return Padding(
+            padding:
+                const EdgeInsets.only(left: 25.0), // Adjust the left padding
+            child: AnimatedSwitcher(
+              duration: Duration(milliseconds: 500),
+              transitionBuilder: (Widget child, Animation<double> animation) {
+                return FadeTransition(
+                  opacity: animation,
+                  child: child,
+                );
+              },
+              child: ListTile(
+                key: ValueKey<String>(users[index]), // Key for AnimatedSwitcher
+                title: Text(
+                  users[index],
+                  style: TextStyle(fontWeight: FontWeight.w600),
+                ),
+                trailing: IconButton(
+                  icon: const Icon(Icons.delete, color: Colors.red),
+                  onPressed: () => _removeUser(index),
+                ),
+              ),
+            ),
+          );
+        },
       ),
     );
   }
