@@ -103,19 +103,18 @@ class _OverzichtPageState extends State<OverzichtPage> {
         for (var doc in querySnapshot.docs) {
           var data = doc.data() as Map<String, dynamic>;
           var user = data['User'] as Map<String, dynamic>;
-          var incidents = user['Incidents'] as Map<String, dynamic>;
+          var incidents = user['Incidents'] as Map<String, dynamic> ??
+              {}; // Handle null case
+
           List<_Incidents> tempIncidents = [];
           var dateFormat = DateFormat('MMM dd, yyyy');
 
           incidents.forEach((key, value) {
-            var subjectsMap = value['Subjects'] as Map<String, dynamic>?;
-            List<String> subjectsList = [];
-
-            if (subjectsMap != null) {
-              subjectsMap.keys.forEach((subjectKey) {
-                subjectsList.add(subjectsMap[subjectKey].toString());
-              });
-            }
+            var subjectsMap = value['Subjects'] as Map<String, dynamic>? ??
+                {}; // Handle null case
+            List<String> subjectsList = subjectsMap.keys
+                .map((key) => subjectsMap[key].toString())
+                .toList();
 
             DateTime incidentDate = dateFormat.parse(value['Date'].toString());
             String month = DateFormat('MMM').format(incidentDate);
@@ -129,14 +128,16 @@ class _OverzichtPageState extends State<OverzichtPage> {
               .month
               .compareTo(DateFormat('MMM').parse(b.date).month));
           data2.addAll(tempIncidents);
+        }
 
-          if (data2.isNotEmpty) {
-            _Incidents lastIncident = data2.last;
-            flowerState = lastIncident.rating;
-            _state?.value = flowerState.toDouble();
-          } else {
-            print('The list is empty');
-          }
+        if (data2.isNotEmpty) {
+          _Incidents lastIncident = data2.last;
+          flowerState = lastIncident.rating;
+          _state?.value = flowerState.toDouble();
+
+          print('Last Incident: $lastIncident');
+        } else {
+          print('The list is empty');
         }
       } else {
         print('No documents found');

@@ -48,7 +48,7 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
 
       Map<String, dynamic> newIncident = {
         'Date': DateFormat.yMMMd().format(DateTime.now()),
-        'Location': '[0° N, 0° E]',
+        // 'Location': '[0° N, 0° E]',
         'Message': messageController.text,
         'Rating': widget.rating,
         'Subjects': Map.fromIterable(selectedTopics,
