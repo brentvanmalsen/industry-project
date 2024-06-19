@@ -1,6 +1,7 @@
 name: industry_project
 description: "A new Flutter project."
 publish_to: "none"
+publish_to: "none"
 version: 0.1.0
 
 environment:
@@ -10,6 +11,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  smooth_page_indicator: ^1.1.0
   mailer: ^6.0.0
   sleek_circular_slider: ^2.0.1
   share_plus: ^9.0.0
@@ -24,7 +26,13 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
   assets:
+    - assets/logo.png
+    - assets/grafiek.png
+    - assets/invullen.png
+    - assets/begin.png
+    - assets/starten.png
     - assets/images/main_button.png
     - assets/images/arrow_back.png
       #assets for rive

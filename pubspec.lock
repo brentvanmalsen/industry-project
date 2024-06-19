@@ -223,6 +223,7 @@ packages:
       sha256: "2e123074287cc9fd6c09de8336dae606d1ddb88d9ac47358826db698c176a1f2"
       url: "https://pub.dev"
     source: hosted
+    version: "1.12.0"
     version: "1.0.5"
   path:
     dependency: transitive
@@ -333,6 +334,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.99"
+  smooth_page_indicator:
+    dependency: "direct main"
+    description:
+      name: smooth_page_indicator
+      sha256: "725bc638d5e79df0c84658e1291449996943f93bacbc2cec49963dbbab48d8ae"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.1.0"
   sleek_circular_slider:
     dependency: "direct main"
     description:
@@ -508,7 +517,7 @@ packages:
       sha256: faea9dee56b520b55a566385b84f2e8de55e7496104adada9962e0bd11bcff1d
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.4"
+    version: "14.2.1"
 sdks:
   dart: ">=3.3.3 <4.0.0"
   flutter: ">=3.19.0"
