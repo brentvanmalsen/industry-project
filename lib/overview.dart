@@ -103,15 +103,13 @@ class _OverzichtPageState extends State<OverzichtPage> {
         for (var doc in querySnapshot.docs) {
           var data = doc.data() as Map<String, dynamic>;
           var user = data['User'] as Map<String, dynamic>;
-          var incidents = user['Incidents'] as Map<String, dynamic> ??
-              {}; // Handle null case
+          var incidents = user['Incidents'] as Map<String, dynamic>;
 
           List<_Incidents> tempIncidents = [];
           var dateFormat = DateFormat('MMM dd, yyyy');
 
           incidents.forEach((key, value) {
-            var subjectsMap = value['Subjects'] as Map<String, dynamic>? ??
-                {}; // Handle null case
+            var subjectsMap = value['Subjects'] as Map<String, dynamic>? ?? {};
             List<String> subjectsList = subjectsMap.keys
                 .map((key) => subjectsMap[key].toString())
                 .toList();
@@ -119,8 +117,12 @@ class _OverzichtPageState extends State<OverzichtPage> {
             DateTime incidentDate = dateFormat.parse(value['Date'].toString());
             String month = DateFormat('MMM').format(incidentDate);
 
-            tempIncidents
-                .add(_Incidents(month, value['Rating'] ?? 0, subjectsList));
+            // Ensure the rating is always parsed as an int
+            int rating = value['Rating'] is int
+                ? value['Rating']
+                : (value['Rating'] as num).toInt();
+
+            tempIncidents.add(_Incidents(month, rating, subjectsList));
           });
 
           tempIncidents.sort((a, b) => DateFormat('MMM')
@@ -133,9 +135,8 @@ class _OverzichtPageState extends State<OverzichtPage> {
         if (data2.isNotEmpty) {
           _Incidents lastIncident = data2.last;
           flowerState = lastIncident.rating;
-          _state?.value = flowerState.toDouble();
 
-          print('Last Incident: $lastIncident');
+          _state?.value = flowerState.toDouble();
         } else {
           print('The list is empty');
         }
@@ -229,7 +230,7 @@ class _OverzichtPageState extends State<OverzichtPage> {
                           child: ElevatedButton(
                             style: ButtonStyle(
                               backgroundColor: MaterialStateProperty.all(
-                                  Color.fromARGB(255, 0, 50, 130)),
+                                  Color.fromARGB(255, 65, 130, 216)),
                             ),
                             onPressed: () {},
                             child: const Text(
@@ -455,7 +456,6 @@ class _OverzichtPageState extends State<OverzichtPage> {
                   ),
                 ],
               ),
-              SizedBox(height: 20),
             ],
           ),
         ),
