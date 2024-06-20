@@ -10,7 +10,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _selectedIndex = 1; // Set default selected index to 1 (Settings)
+  int _selectedIndex = 2; // Set default selected index to 1 (Settings)
 
   void _onItemTapped(int index) {
     setState(() {
@@ -118,7 +118,8 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       bottomNavigationBar: Stack(
-        alignment: FractionalOffset.center,
+        alignment: Alignment.center,
+        clipBehavior: Clip.none, // Ensure the button can overflow the container
         children: [
           Container(
             height: 60,
@@ -187,7 +188,7 @@ class _HomePageState extends State<HomePage> {
                   color: Colors.blue,
                   shape: BoxShape.circle,
                   boxShadow: [
-                    const BoxShadow(
+                    BoxShadow(
                       color: Colors.black26,
                       blurRadius: 10,
                       offset: Offset(0, 4),

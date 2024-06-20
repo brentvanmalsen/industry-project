@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "886866201063",
+    "project_id": "industry-project-krom",
+    "storage_bucket": "industry-project-krom.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:886866201063:android:58d30f02c28604902cd542",
+        "android_client_info": {
+          "package_name": "com.example.industry_project"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNoRELHPURzMAF7Klz6qq4CLqW-OkvXGQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

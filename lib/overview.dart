@@ -1,7 +1,13 @@
+// ignore_for_file: unused_field
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:industry_project/home.dart';
+import 'package:industry_project/settings.dart';
 import 'package:rive/rive.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:intl/intl.dart';
 
 class OverzichtPage extends StatefulWidget {
   const OverzichtPage({Key? key}) : super(key: key);
@@ -15,29 +21,44 @@ class _OverzichtPageState extends State<OverzichtPage> {
   Artboard? _riveArtboard;
   StateMachineController? _controller;
   SMIInput<double>? _state;
-
-  final List<_IncidentLog> _yearData = [
-    _IncidentLog('Jan', 1),
-    _IncidentLog('Feb', 2),
-    _IncidentLog('Mar', 4),
-    _IncidentLog('Apr', 3),
-    _IncidentLog('May', 4),
-    _IncidentLog('Jun', 4),
-    _IncidentLog('Jul', 5),
-    _IncidentLog('Aug', 6),
-    _IncidentLog('Sep', 7),
-    _IncidentLog('Oct', 8),
-    _IncidentLog('Nov', 9),
-    _IncidentLog('Dec', 10)
-  ];
-
-  List<_IncidentLog> _displayData = [];
+  List<_Incidents> data2 = [];
+  List<_Incidents> _displayData = [];
   bool _showingFlower = true;
+
+  int _selectedIndex = 0; // Set default selected index to 1 (Overview)
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    switch (index) {
+      case 0:
+        Navigator.push(
+          context as BuildContext,
+          MaterialPageRoute(builder: (context) => OverzichtPage()),
+        );
+        break;
+      case 1:
+        Navigator.push(
+          context as BuildContext,
+          MaterialPageRoute(builder: (context) => SettingsPage()),
+        );
+        break;
+
+      case 2:
+        Navigator.push(
+          context as BuildContext,
+          MaterialPageRoute(builder: (context) => HomePage()),
+        );
+        break;
+    }
+  }
 
   @override
   void initState() {
     super.initState();
-    _displayData = _yearData;
+    getData();
+    _displayData = data2;
     try {
       rootBundle.load('assets/flower.riv').then(
         (data) async {
@@ -60,25 +81,70 @@ class _OverzichtPageState extends State<OverzichtPage> {
   void _updateFilter(String filter) {
     setState(() {
       if (filter == 'Day') {
-        _displayData = [_IncidentLog('Day', 1)];
+        _displayData = [];
       } else if (filter == 'Week') {
-        _displayData = [
-          _IncidentLog('Week 1', 2),
-          _IncidentLog('Week 2', 3),
-          _IncidentLog('Week 3', 4),
-          _IncidentLog('Week 4', 5)
-        ];
+        _displayData = [];
       } else if (filter == 'Month') {
-        _displayData = [
-          _IncidentLog('Jan', 1),
-          _IncidentLog('Feb', 2),
-          _IncidentLog('Mar', 4),
-          _IncidentLog('Apr', 3)
-        ];
+        _displayData = [];
       } else if (filter == 'Year') {
-        _displayData = _yearData;
+        _displayData = data2;
       }
     });
+  }
+
+  void getData() async {
+    try {
+      CollectionReference users = FirebaseFirestore.instance.collection('1');
+      QuerySnapshot querySnapshot = await users.get();
+
+      if (querySnapshot.docs.isNotEmpty) {
+        data2.clear();
+
+        for (var doc in querySnapshot.docs) {
+          var data = doc.data() as Map<String, dynamic>;
+          var user = data['User'] as Map<String, dynamic>;
+          var incidents = user['Incidents'] as Map<String, dynamic> ??
+              {}; // Handle null case
+
+          List<_Incidents> tempIncidents = [];
+          var dateFormat = DateFormat('MMM dd, yyyy');
+
+          incidents.forEach((key, value) {
+            var subjectsMap = value['Subjects'] as Map<String, dynamic>? ??
+                {}; // Handle null case
+            List<String> subjectsList = subjectsMap.keys
+                .map((key) => subjectsMap[key].toString())
+                .toList();
+
+            DateTime incidentDate = dateFormat.parse(value['Date'].toString());
+            String month = DateFormat('MMM').format(incidentDate);
+
+            tempIncidents
+                .add(_Incidents(month, value['Rating'] ?? 0, subjectsList));
+          });
+
+          tempIncidents.sort((a, b) => DateFormat('MMM')
+              .parse(a.date)
+              .month
+              .compareTo(DateFormat('MMM').parse(b.date).month));
+          data2.addAll(tempIncidents);
+        }
+
+        if (data2.isNotEmpty) {
+          _Incidents lastIncident = data2.last;
+          flowerState = lastIncident.rating;
+          _state?.value = flowerState.toDouble();
+
+          print('Last Incident: $lastIncident');
+        } else {
+          print('The list is empty');
+        }
+      } else {
+        print('No documents found');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 
   @override
@@ -339,20 +405,25 @@ class _OverzichtPageState extends State<OverzichtPage> {
                         Container(
                           height: 300,
                           child: SfCartesianChart(
-                            primaryXAxis: CategoryAxis(),
+                            primaryXAxis: const CategoryAxis(
+                              edgeLabelPlacement: EdgeLabelPlacement
+                                  .none, // Remove any label shift
+                              labelAlignment: LabelAlignment
+                                  .start, // Align labels to the start
+                            ),
                             primaryYAxis: const NumericAxis(
                               interval: 1,
                               minimum: 0,
                               maximum: 10,
                             ),
                             tooltipBehavior: TooltipBehavior(enable: true),
-                            series: <CartesianSeries<_IncidentLog, String>>[
-                              LineSeries<_IncidentLog, String>(
+                            series: <CartesianSeries<_Incidents, String>>[
+                              LineSeries<_Incidents, String>(
                                 dataSource: _displayData,
-                                xValueMapper: (_IncidentLog incidentScale, _) =>
-                                    incidentScale.month,
-                                yValueMapper: (_IncidentLog incidentScale, _) =>
-                                    incidentScale.incidentScale,
+                                xValueMapper: (_Incidents incidentScale, _) =>
+                                    incidentScale.date,
+                                yValueMapper: (_Incidents incidentScale, _) =>
+                                    incidentScale.rating,
                                 name: 'incidentScale',
                                 markerSettings: MarkerSettings(isVisible: true),
                               ),
@@ -362,17 +433,6 @@ class _OverzichtPageState extends State<OverzichtPage> {
                       ],
                     ),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    flowerState++;
-                    _state?.value = flowerState.toDouble();
-                  });
-                },
-                child: Text('increase'),
-              ),
-              SizedBox(height: 20),
-              // Page Indicator
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -400,19 +460,98 @@ class _OverzichtPageState extends State<OverzichtPage> {
           ),
         ),
       ),
+      bottomNavigationBar: Stack(
+        alignment: Alignment.center,
+        clipBehavior: Clip.none, // Ensure the button can overflow the container
+        children: [
+          Container(
+            height: 60,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black12,
+                  blurRadius: 8,
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: <Widget>[
+                Expanded(
+                  child: InkWell(
+                    onTap: () => _onItemTapped(0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(Icons.list,
+                            color: _selectedIndex == 0
+                                ? Colors.blue
+                                : Colors.grey),
+                        Text('Overzichten',
+                            style: TextStyle(
+                                color: _selectedIndex == 0
+                                    ? Colors.blue
+                                    : Colors.grey)),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 60), // Spacer for the home button
+                Expanded(
+                  child: InkWell(
+                    onTap: () => _onItemTapped(1),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Icon(Icons.settings,
+                            color: _selectedIndex == 1
+                                ? Colors.blue
+                                : Colors.grey),
+                        Text('Instellingen',
+                            style: TextStyle(
+                                color: _selectedIndex == 1
+                                    ? Colors.blue
+                                    : Colors.grey)),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Positioned(
+            bottom: 10, // Adjust the position of the home button
+            child: InkWell(
+              onTap: () => _onItemTapped(2),
+              child: Container(
+                width: 70,
+                height: 70,
+                decoration: const BoxDecoration(
+                  color: Colors.blue,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black26,
+                      blurRadius: 10,
+                      offset: Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: const Icon(Icons.home, color: Colors.white, size: 40),
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
 
-class _IncidentLog {
-  _IncidentLog(this.month, this.incidentScale);
+class _Incidents {
+  _Incidents(this.date, this.rating, this.subjects);
 
-  final String month;
-  final double incidentScale;
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: OverzichtPage(),
-  ));
+  final String date;
+  final int rating;
+  final List<String> subjects;
 }
