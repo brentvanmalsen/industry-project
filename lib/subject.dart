@@ -140,124 +140,109 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
                     ],
                   ),
                   const SizedBox(height: 35),
-                  // Third row with 3 buttons
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      const SizedBox(width: 25),
-                      // Button
-                      SizedBox(
-                        width: 50,
-                        height: 35,
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
-                                const Color.fromARGB(255, 65, 130, 216),
-                              ),
-                              shape: MaterialStateProperty.all(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(2)))),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const OnderwerpPage(
-                                  rating: 0,
-                                ),
-                              ),
-                            );
-                          },
-                          child: const Text(
-                            '+',
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 255, 255, 255),
-                            ),
-                          ),
-                          // Text
+                  // Button for adding new topic
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: const Color.fromARGB(255, 65, 130, 216),
+                        backgroundColor: Colors.white,
+                        side: const BorderSide(
+                          color: Color.fromARGB(255, 65, 130, 216),
+                          width: 2,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      // Text
-                      const Text(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const OnderwerpPage(
+                              rating: 0,
+                            ),
+                          ),
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.add,
+                        color: Color.fromARGB(255, 65, 130, 216),
+                      ),
+                      label: const Text(
                         'Voeg nieuw onderwerp toe',
                         style: TextStyle(
+                          color: Color.fromARGB(255, 65, 130, 216),
                           fontSize: 15,
                           fontFamily: 'Roboto',
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ],
+                    ),
                   ),
                   const SizedBox(height: 20),
-                  // Third row with 3 buttons
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: <Widget>[
-                      const SizedBox(width: 25),
-                      // Button
-                      SizedBox(
-                        width: 50,
-                        height: 35,
-                        child: ElevatedButton(
-                          style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all(
-                                const Color.fromARGB(255, 65, 130, 216),
-                              ),
-                              shape: MaterialStateProperty.all(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(2)))),
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const OnderwerpPage(
-                                  rating: 0,
-                                ),
-                              ),
-                            );
-                          },
-                          child: const Text(
-                            '+',
-                            style: TextStyle(
-                              color: Color.fromARGB(255, 255, 255, 255),
-                            ),
-                          ),
-                          // Text
+                  // Button for adding new location
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                    child: OutlinedButton.icon(
+                      style: OutlinedButton.styleFrom(
+                        foregroundColor: const Color.fromARGB(255, 65, 130, 216),
+                        backgroundColor: Colors.white,
+                        side: const BorderSide(
+                          color: Color.fromARGB(255, 65, 130, 216),
+                          width: 2,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      // Text
-                      const Text(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const OnderwerpPage(
+                              rating: 0,
+                            ),
+                          ),
+                        );
+                      },
+                      icon: const Icon(
+                        Icons.add,
+                        color: Color.fromARGB(255, 65, 130, 216),
+                      ),
+                      label: const Text(
                         'Voeg locatie toe',
                         style: TextStyle(
+                          color: Color.fromARGB(255, 65, 130, 216),
                           fontSize: 15,
                           fontFamily: 'Roboto',
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ],
+                    ),
                   ),
                   const SizedBox(height: 50),
                   // Textfield
                   const SizedBox(
-                      width: 300,
-                      height: 120,
-                      child: Column(
-                        children: <Widget>[
-                          Expanded(
-                            child: TextField(
-                              maxLines: 10,
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: 'Korte samenvatting van gebeurtenis',
-                              ),
+                    width: 300,
+                    height: 120,
+                    child: Column(
+                      children: <Widget>[
+                        Expanded(
+                          child: TextField(
+                            maxLines: 10,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(),
+                              labelText: 'Korte samenvatting van gebeurtenis',
                             ),
                           ),
-                        ],
-                      )),
+                        ),
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: 100),
                   Container(
-                    margin: EdgeInsets.only(bottom: 20),
+                    margin: const EdgeInsets.only(bottom: 20),
                     child: ElevatedButton(
                       onPressed: () {
                         Navigator.push(
@@ -271,11 +256,11 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
                         );
                       },
                       style: ElevatedButton.styleFrom(
-                        fixedSize: Size(307, 53),
+                        fixedSize: const Size(307, 53),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        backgroundColor: Color.fromARGB(255, 65, 130, 216),
+                        backgroundColor: const Color.fromARGB(255, 65, 130, 216),
                       ),
                       child: const Text(
                         'Volgende',
@@ -306,6 +291,11 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
             buttonStates[index]
                 ? const Color.fromARGB(255, 0, 50, 130)
                 : const Color.fromARGB(255, 65, 130, 216),
+          ),
+          shape: MaterialStateProperty.all(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
         ),
         onPressed: () {

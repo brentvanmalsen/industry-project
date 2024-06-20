@@ -107,7 +107,7 @@ class _OverzichtPageState extends State<OverzichtPage> {
                     Expanded(
                       child: Center(
                         child: Text(
-                          'Onderwerpen',
+                          'Overzicht',
                           style: TextStyle(
                               fontSize: 35,
                               fontFamily: 'Roboto',
@@ -400,6 +400,7 @@ class _OverzichtPageState extends State<OverzichtPage> {
           ),
         ),
       ),
+      
     );
   }
 }
