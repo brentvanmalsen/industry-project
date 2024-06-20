@@ -10,7 +10,7 @@ class FinalPage extends StatefulWidget {
   final List<String> subject; // Placeholder voor het onderwerp
   final int number; // Placeholder voor het cijfer
 
-  FinalPage({required this.subject, required this.number});
+  FinalPage({required this.subject, required this.number, String? location});
 
   @override
   State<FinalPage> createState() => _FinalPageState();

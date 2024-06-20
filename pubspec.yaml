@@ -15,6 +15,8 @@ dependencies:
   smooth_page_indicator: ^1.1.0
   syncfusion_flutter_charts: ^25.2.5
   rive: ^0.13.5
+  geolocator: ^12.0.0
+  google_places_flutter: ^2.0.8
 
 dev_dependencies:
   flutter_test:
