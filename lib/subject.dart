@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:industry_project/final.dart';
 import 'package:industry_project/rating.dart';
 
@@ -16,6 +17,7 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
   List<bool> buttonStates = List<bool>.generate(8, (index) => false);
   List<String> selectedTopics = [];
   String? selectedLocation;
+  TextEditingController _customLocationController = TextEditingController();
 
   void _selectLocation() async {
     bool serviceEnabled;
@@ -46,14 +48,52 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
         Position position = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.high,
         );
+        List<Placemark> placemarks = await placemarkFromCoordinates(
+            position.latitude, position.longitude);
+        Placemark place = placemarks[0];
         setState(() {
-          selectedLocation = "${position.latitude}, ${position.longitude}";
+          selectedLocation = "${place.locality} geselecteerd";
         });
       } catch (e) {
         print('Error getting location: $e');
         // Handle errors, e.g., if location services are disabled or permission is denied
       }
     }
+  }
+
+  void _showLocationInputDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Voer een locatie in'),
+          content: TextField(
+            controller: _customLocationController,
+            decoration: InputDecoration(
+              hintText: 'Voer een locatie in',
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Annuleren'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text('Toevoegen'),
+              onPressed: () {
+                setState(() {
+                  selectedLocation =
+                      _customLocationController.text + ' geselecteerd';
+                });
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -89,14 +129,13 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
               const SizedBox(height: 25),
               // Display the rating
               Container(
-                height:
-                    50, // Hoogte en breedte gelijk maken om een cirkel te behouden
+                height: 50,
                 width: 50,
                 alignment: Alignment.center,
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   color: Colors.blue,
-                  shape: BoxShape.circle, // Instellen van de vorm als cirkel
+                  shape: BoxShape.circle,
                 ),
                 child: Text(
                   widget.rating.toStringAsFixed(0),
@@ -112,34 +151,38 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     // Buttons
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
+                    Column(
                       children: <Widget>[
-                        buildButton(0, 'Vakantie'),
-                        const SizedBox(width: 8),
-                        buildButton(1, 'Sociaal'),
-                        const SizedBox(width: 8),
-                        buildButton(2, 'Familie'),
-                      ],
-                    ),
-                    const SizedBox(height: 5),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        buildButton(3, 'Stad'),
-                        const SizedBox(width: 8),
-                        buildButton(4, 'Auto rijden'),
-                      ],
-                    ),
-                    const SizedBox(height: 5),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        buildButton(5, 'Ov'),
-                        const SizedBox(width: 8),
-                        buildButton(6, 'Onderwerp'),
-                        const SizedBox(width: 8),
-                        buildButton(7, 'Onderwerp'),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            buildButton(0, 'Vakantie'),
+                            const SizedBox(width: 8),
+                            buildButton(1, 'Sociaal'),
+                            const SizedBox(width: 8),
+                            buildButton(2, 'Familie'),
+                          ],
+                        ),
+                        const SizedBox(height: 5),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            buildButton(3, 'Stad'),
+                            const SizedBox(width: 8),
+                            buildButton(4, 'Auto rijden'),
+                          ],
+                        ),
+                        const SizedBox(height: 5),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: <Widget>[
+                            buildButton(5, 'Ov'),
+                            const SizedBox(width: 8),
+                            buildButton(6, 'Onderwerp'),
+                            const SizedBox(width: 8),
+                            buildButton(7, 'Onderwerp'),
+                          ],
+                        ),
                       ],
                     ),
                     const SizedBox(height: 35),
@@ -233,7 +276,7 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
                             Container(
                               margin: EdgeInsets.symmetric(horizontal: 25),
                               child: Text(
-                                'Huidige locatie geselecteerd: $selectedLocation',
+                                selectedLocation!,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -324,10 +367,9 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
           setState(() {
             buttonStates[index] = !buttonStates[index];
             if (buttonStates[index]) {
-              selectedTopics.add(text); // Voeg geselecteerd onderwerp toe
+              selectedTopics.add(text);
             } else {
-              selectedTopics
-                  .remove(text); // Verwijder niet-geselecteerd onderwerp
+              selectedTopics.remove(text);
             }
           });
         },
@@ -340,9 +382,6 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
   }
 
   void showLocationOptionsOverlay(BuildContext context) {
-    final RenderBox overlay =
-        Overlay.of(context)!.context.findRenderObject()! as RenderBox;
-
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -363,8 +402,7 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
                 title: const Text('Zoek een locatie'),
                 onTap: () {
                   Navigator.pop(context);
-                  // Implementeer logica om een locatie te zoeken
-                  // Deze functionaliteit moet nog worden toegevoegd
+                  _showLocationInputDialog(); // Open het locatie invoer venster
                 },
               ),
             ],

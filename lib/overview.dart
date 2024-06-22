@@ -4,7 +4,10 @@ import 'package:rive/rive.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
 class OverzichtPage extends StatefulWidget {
-  const OverzichtPage({Key? key}) : super(key: key);
+  final String selectedLocation; // Locatie parameter
+
+  const OverzichtPage({Key? key, required this.selectedLocation})
+      : super(key: key);
 
   @override
   State<OverzichtPage> createState() => _OverzichtPageState();
@@ -15,6 +18,7 @@ class _OverzichtPageState extends State<OverzichtPage> {
   Artboard? _riveArtboard;
   StateMachineController? _controller;
   SMIInput<double>? _state;
+  int _currentPage = 0;
 
   final List<_IncidentLog> _yearData = [
     _IncidentLog('Jan', 1),
@@ -32,7 +36,6 @@ class _OverzichtPageState extends State<OverzichtPage> {
   ];
 
   List<_IncidentLog> _displayData = [];
-  bool _showingFlower = true;
 
   @override
   void initState() {
@@ -87,12 +90,14 @@ class _OverzichtPageState extends State<OverzichtPage> {
       body: GestureDetector(
         onHorizontalDragEnd: (details) {
           if (details.primaryVelocity! < 0) {
+            // Swipe left
             setState(() {
-              _showingFlower = false;
+              if (_currentPage < 2) _currentPage++;
             });
           } else if (details.primaryVelocity! > 0) {
+            // Swipe right
             setState(() {
-              _showingFlower = true;
+              if (_currentPage > 0) _currentPage--;
             });
           }
         },
@@ -118,11 +123,6 @@ class _OverzichtPageState extends State<OverzichtPage> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: IconButton(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(
-                            Color.fromARGB(255, 65, 130, 216),
-                          ),
-                        ),
                         onPressed: () {},
                         icon: const Icon(
                           Icons.question_mark_outlined,
@@ -284,7 +284,17 @@ class _OverzichtPageState extends State<OverzichtPage> {
                 ),
               ),
               SizedBox(height: 20),
-              if (!_showingFlower)
+              if (_currentPage == 0)
+                (_riveArtboard == null
+                    ? const SizedBox()
+                    : Container(
+                        width: 300,
+                        height: 300,
+                        child: Rive(
+                            alignment: Alignment.center,
+                            artboard: _riveArtboard!),
+                      )),
+              if (_currentPage == 1)
                 Column(
                   children: [
                     Row(
@@ -312,55 +322,79 @@ class _OverzichtPageState extends State<OverzichtPage> {
                       ],
                     ),
                     SizedBox(height: 20),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Grafiek',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    Container(
+                      height: 300,
+                      child: SfCartesianChart(
+                        primaryXAxis: CategoryAxis(),
+                        primaryYAxis: const NumericAxis(
+                          interval: 1,
+                          minimum: 0,
+                          maximum: 10,
+                        ),
+                        tooltipBehavior: TooltipBehavior(enable: true),
+                        series: <CartesianSeries<_IncidentLog, String>>[
+                          LineSeries<_IncidentLog, String>(
+                            dataSource: _displayData,
+                            xValueMapper: (_IncidentLog incidentScale, _) =>
+                                incidentScale.month,
+                            yValueMapper: (_IncidentLog incidentScale, _) =>
+                                incidentScale.incidentScale,
+                            name: 'incidentScale',
+                            markerSettings: MarkerSettings(isVisible: true),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
-              _showingFlower
-                  ? (_riveArtboard == null
-                      ? const SizedBox()
-                      : Container(
-                          width: 300,
-                          height: 300,
-                          child: Rive(
-                              alignment: Alignment.center,
-                              artboard: _riveArtboard!),
-                        ))
-                  : Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            'Grafiek',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+              if (_currentPage == 2)
+                Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Nieuwe Weergave',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
-                        Container(
-                          height: 300,
-                          child: SfCartesianChart(
-                            primaryXAxis: CategoryAxis(),
-                            primaryYAxis: const NumericAxis(
-                              interval: 1,
-                              minimum: 0,
-                              maximum: 10,
-                            ),
-                            tooltipBehavior: TooltipBehavior(enable: true),
-                            series: <CartesianSeries<_IncidentLog, String>>[
-                              LineSeries<_IncidentLog, String>(
-                                dataSource: _displayData,
-                                xValueMapper: (_IncidentLog incidentScale, _) =>
-                                    incidentScale.month,
-                                yValueMapper: (_IncidentLog incidentScale, _) =>
-                                    incidentScale.incidentScale,
-                                name: 'incidentScale',
-                                markerSettings: MarkerSettings(isVisible: true),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                      ),
                     ),
+                    // Hier kun je de inhoud van je derde weergave toevoegen
+                    Container(
+                      height: 300,
+                      color: Colors.grey[300],
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Locatie:',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            Text(
+                              widget.selectedLocation,
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
@@ -375,32 +409,23 @@ class _OverzichtPageState extends State<OverzichtPage> {
               // Page Indicator
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
+                children: List.generate(3, (index) {
+                  return Container(
                     width: 10,
                     height: 10,
+                    margin: EdgeInsets.symmetric(horizontal: 4),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: _showingFlower ? Colors.blue : Colors.grey,
+                      color: _currentPage == index ? Colors.blue : Colors.grey,
                     ),
-                  ),
-                  SizedBox(width: 8),
-                  Container(
-                    width: 10,
-                    height: 10,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: !_showingFlower ? Colors.blue : Colors.grey,
-                    ),
-                  ),
-                ],
+                  );
+                }),
               ),
               SizedBox(height: 20),
             ],
           ),
         ),
       ),
-      
     );
   }
 }
@@ -410,10 +435,4 @@ class _IncidentLog {
 
   final String month;
   final double incidentScale;
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: OverzichtPage(),
-  ));
 }
