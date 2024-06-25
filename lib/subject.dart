@@ -230,9 +230,9 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
                           children: <Widget>[
                             buildButton(5, 'Ov'),
                             const SizedBox(width: 8),
-                            buildButton(6, 'Onderwerp'),
+                            buildButton(6, 'Sportclub'),
                             const SizedBox(width: 8),
-                            buildButton(7, 'Onderwerp'),
+                            buildButton(7, 'Werk'),
                           ],
                         ),
                       ],

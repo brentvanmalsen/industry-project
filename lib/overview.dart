@@ -26,9 +26,9 @@ class _OverzichtPageState extends State<OverzichtPage> {
   SMIInput<double>? _state;
   List<_Incidents> data2 = [];
   List<_Incidents> _displayData = [];
-  bool _showingFlower = true;
 
   int _selectedIndex = 0; // Set default selected index to 1 (Overview)
+  int _currentPage = 0; // Set default page to 0 (Flower)
 
   void _onItemTapped(int index) {
     setState(() {
@@ -38,7 +38,10 @@ class _OverzichtPageState extends State<OverzichtPage> {
       case 0:
         Navigator.push(
           context as BuildContext,
-          MaterialPageRoute(builder: (context) => OverzichtPage()),
+          MaterialPageRoute(
+              builder: (context) => OverzichtPage(
+                    selectedLocation: '',
+                  )),
         );
         break;
       case 1:
@@ -324,7 +327,7 @@ class _OverzichtPageState extends State<OverzichtPage> {
                             ),
                             onPressed: () {},
                             child: const Text(
-                              'Onderwerp',
+                              'Sportclub',
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
@@ -340,7 +343,7 @@ class _OverzichtPageState extends State<OverzichtPage> {
                             ),
                             onPressed: () {},
                             child: const Text(
-                              'Onderwerp',
+                              'Werk',
                               style: TextStyle(color: Colors.white),
                             ),
                           ),
@@ -403,11 +406,11 @@ class _OverzichtPageState extends State<OverzichtPage> {
                       height: 300,
                       child: SfCartesianChart(
                         primaryXAxis: const CategoryAxis(
-                              edgeLabelPlacement: EdgeLabelPlacement
-                                  .none, // Remove any label shift
-                              labelAlignment: LabelAlignment
-                                  .start, // Align labels to the start
-                            ),
+                          edgeLabelPlacement:
+                              EdgeLabelPlacement.none, // Remove any label shift
+                          labelAlignment:
+                              LabelAlignment.start, // Align labels to the start
+                        ),
                         primaryYAxis: const NumericAxis(
                           interval: 1,
                           minimum: 0,
@@ -477,16 +480,9 @@ class _OverzichtPageState extends State<OverzichtPage> {
                     margin: EdgeInsets.symmetric(horizontal: 4),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      color: _showingFlower ? Colors.blue : Colors.grey,
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  Container(
-                    width: 10,
-                    height: 10,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: !_showingFlower ? Colors.blue : Colors.grey,
+                      color: _currentPage == index
+                          ? Colors.blue
+                          : Colors.grey[300],
                     ),
                   );
                 }),
