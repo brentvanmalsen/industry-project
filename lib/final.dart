@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:industry_project/home.dart';
+import 'package:rive/rive.dart';
 
 void main() {
   runApp(MaterialApp(
@@ -17,19 +20,52 @@ class FinalPage extends StatefulWidget {
 }
 
 class _FinalPageState extends State<FinalPage> {
+  int flowerState = 0;
+  Artboard? _riveArtboard;
+  StateMachineController? _controller;
+  SMIInput<double>? _state;
+
+  @override
+  void initState() {
+    super.initState();
+    try {
+      RiveFile.initialize();
+      rootBundle.load('assets/flower.riv').then(
+        (data) async {
+          final file = RiveFile.import(data);
+          final artboard = file.mainArtboard;
+          var controller =
+              StateMachineController.fromArtboard(artboard, 'Grow');
+          if (controller != null) {
+            artboard.addController(controller);
+            _state = controller.findInput('State');
+            flowerState = widget.number;
+            _state?.value = flowerState.toDouble();
+            setState(() => _riveArtboard = artboard);
+          }
+        },
+      );
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
+        automaticallyImplyLeading: false, // Hide the back button
+
         actions: [
           IconButton(
-            icon: const Icon(Icons.info_outline),
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(
+              const Color.fromARGB(255, 65, 130, 216),
+            )),
+            icon: const Icon(
+              Icons.question_mark_rounded,
+              color: Colors.white,
+            ),
             onPressed: () {
               showDialog(
                 context: context,
@@ -91,16 +127,14 @@ class _FinalPageState extends State<FinalPage> {
             // Bloem animatie placeholder
             Container(
               width: double.infinity,
-              height: 200,
+              height: 450,
               decoration: BoxDecoration(
-                color: Colors.grey,
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Center(
-                child: Text(
-                  'Animatie van een bloem',
-                  style: TextStyle(fontSize: 16, color: Colors.white),
-                ),
+                child: _riveArtboard == null
+                    ? const SizedBox()
+                    : Rive(artboard: _riveArtboard!),
               ),
             ),
             Spacer(),
@@ -110,36 +144,25 @@ class _FinalPageState extends State<FinalPage> {
                 // Navigatie naar de volgende pagina
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => NextPage()),
+                  MaterialPageRoute(builder: (context) => HomePage()),
                 );
               },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 16.0),
-                child: Text('Volgende',
-                    style: TextStyle(fontSize: 18, color: Colors.white)),
-              ),
               style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.white,
-                backgroundColor: Colors.blue, // Witte tekst
-                minimumSize: Size(double.infinity, 50), // Uitgerekte knop
+                fixedSize: Size(307, 53),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                backgroundColor: Color.fromARGB(255, 65, 130, 216),
               ),
+              child: const Text('Terug naar Home',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                  )),
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class NextPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Volgende Pagina'),
-      ),
-      body: Center(
-        child: Text('Dit is de volgende pagina.'),
       ),
     );
   }

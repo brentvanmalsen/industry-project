@@ -1,6 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:industry_project/overview.dart';
 import 'package:industry_project/settings.dart';
+import 'package:rive/rive.dart';
 import 'rating.dart';
 import 'package:share_plus/share_plus.dart';
 
@@ -11,6 +15,82 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 2; // Set default selected index to 1 (Settings)
+  int flowerState = 0;
+  Artboard? _riveArtboard;
+  StateMachineController? _controller;
+  SMIInput<double>? _state;
+
+  @override
+  void initState() {
+    getData();
+    super.initState();
+    try {
+      RiveFile.initialize();
+      rootBundle.load('assets/flower.riv').then(
+        (data) async {
+          final file = RiveFile.import(data);
+          final artboard = file.mainArtboard;
+          var controller =
+              StateMachineController.fromArtboard(artboard, 'Grow');
+          if (controller != null) {
+            artboard.addController(controller);
+            _state = controller.findInput('State');
+            setState(() => _riveArtboard = artboard);
+          }
+        },
+      );
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  void getData() async {
+    try {
+      CollectionReference users = FirebaseFirestore.instance.collection('1');
+      QuerySnapshot querySnapshot = await users.get();
+
+      List tempIncidents = [];
+      for (var doc in querySnapshot.docs) {
+        tempIncidents.add(doc.data());
+      }
+
+      if (tempIncidents.isNotEmpty) {
+        var userData =
+            tempIncidents[0]; // Assuming you want the first user's data
+
+        if (userData['User'] != null && userData['User']['Incidents'] != null) {
+          var incidents = userData['User']['Incidents'] as Map<String, dynamic>;
+
+          // Sort incidents by the incident key (e.g., Incident1, Incident2, ...)
+          var sortedKeys = incidents.keys.toList()
+            ..sort((a, b) => a.compareTo(b)); // Sorts alphabetically
+
+          var latestIncidentKey = sortedKeys.last;
+          var latestIncident = incidents[latestIncidentKey];
+
+          if (latestIncident != null && latestIncident['Rating'] != null) {
+            // Ensure the rating is always parsed as an int
+            int latestRating = latestIncident['Rating'] is int
+                ? latestIncident['Rating']
+                : (latestIncident['Rating'] as num).toInt();
+
+            flowerState = latestRating;
+            if (_state != null) {
+              _state!.value = flowerState.toDouble();
+            }
+          } else {
+            print('No rating found in the latest incident');
+          }
+        } else {
+          print('No incidents found');
+        }
+      } else {
+        print('No user data found');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -43,6 +123,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false, // Hide the back button
         title: const Text('Home Page'),
         actions: [
           ClipOval(
@@ -95,6 +176,20 @@ class _HomePageState extends State<HomePage> {
       ),
       body: Column(
         children: [
+          // Rive artboard should be in this sizedbox
+          const SizedBox(
+            height: 30,
+          ),
+          SizedBox(
+            height: 200,
+            child: _riveArtboard == null
+                ? const SizedBox()
+                : Rive(
+                    alignment: Alignment.center,
+                    artboard: _riveArtboard!,
+                  ),
+          ),
+          const SizedBox(height: 30),
           Center(
             child: SizedBox(
               width: 230,
