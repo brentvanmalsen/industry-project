@@ -31,6 +31,21 @@ class _RatingPageState extends State<RatingPage> {
             );
           },
         ),
+        actions: <Widget>[
+          IconButton(
+            style: ButtonStyle(
+                backgroundColor: MaterialStateProperty.all(
+              const Color.fromARGB(255, 65, 130, 216),
+            )),
+            icon: const Icon(
+              Icons.question_mark_rounded,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              // Handle onPressed
+            },
+          ),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

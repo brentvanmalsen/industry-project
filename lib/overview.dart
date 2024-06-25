@@ -193,11 +193,17 @@ class _OverzichtPageState extends State<OverzichtPage> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: IconButton(
-                        onPressed: () {},
+                        style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                          const Color.fromARGB(255, 65, 130, 216),
+                        )),
                         icon: const Icon(
-                          Icons.question_mark_outlined,
+                          Icons.question_mark_rounded,
                           color: Colors.white,
                         ),
+                        onPressed: () {
+                          // Handle onPressed
+                        },
                       ),
                     ),
                   ],

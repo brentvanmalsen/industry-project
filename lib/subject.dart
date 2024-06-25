@@ -167,7 +167,14 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
           ),
           actions: <Widget>[
             IconButton(
-              icon: const Icon(Icons.help),
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(
+                const Color.fromARGB(255, 65, 130, 216),
+              )),
+              icon: const Icon(
+                Icons.question_mark_rounded,
+                color: Colors.white,
+              ),
               onPressed: () {
                 // Handle onPressed
               },
