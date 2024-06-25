@@ -10,7 +10,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
 
 class OverzichtPage extends StatefulWidget {
-  const OverzichtPage({Key? key}) : super(key: key);
+  final String selectedLocation; // Locatie parameter
+
+  const OverzichtPage({Key? key, required this.selectedLocation})
+      : super(key: key);
 
   @override
   State<OverzichtPage> createState() => _OverzichtPageState();
@@ -154,12 +157,14 @@ class _OverzichtPageState extends State<OverzichtPage> {
       body: GestureDetector(
         onHorizontalDragEnd: (details) {
           if (details.primaryVelocity! < 0) {
+            // Swipe left
             setState(() {
-              _showingFlower = false;
+              if (_currentPage < 2) _currentPage++;
             });
           } else if (details.primaryVelocity! > 0) {
+            // Swipe right
             setState(() {
-              _showingFlower = true;
+              if (_currentPage > 0) _currentPage--;
             });
           }
         },
@@ -174,7 +179,7 @@ class _OverzichtPageState extends State<OverzichtPage> {
                     Expanded(
                       child: Center(
                         child: Text(
-                          'Onderwerpen',
+                          'Overzicht',
                           style: TextStyle(
                               fontSize: 35,
                               fontFamily: 'Roboto',
@@ -185,11 +190,6 @@ class _OverzichtPageState extends State<OverzichtPage> {
                     Align(
                       alignment: Alignment.centerRight,
                       child: IconButton(
-                        style: ButtonStyle(
-                          backgroundColor: MaterialStateProperty.all(
-                            Color.fromARGB(255, 65, 130, 216),
-                          ),
-                        ),
                         onPressed: () {},
                         icon: const Icon(
                           Icons.question_mark_outlined,
@@ -351,7 +351,17 @@ class _OverzichtPageState extends State<OverzichtPage> {
                 ),
               ),
               SizedBox(height: 20),
-              if (!_showingFlower)
+              if (_currentPage == 0)
+                (_riveArtboard == null
+                    ? const SizedBox()
+                    : Container(
+                        width: 300,
+                        height: 300,
+                        child: Rive(
+                            alignment: Alignment.center,
+                            artboard: _riveArtboard!),
+                      )),
+              if (_currentPage == 1)
                 Column(
                   children: [
                     Row(
@@ -379,67 +389,92 @@ class _OverzichtPageState extends State<OverzichtPage> {
                       ],
                     ),
                     SizedBox(height: 20),
-                  ],
-                ),
-              _showingFlower
-                  ? (_riveArtboard == null
-                      ? const SizedBox()
-                      : Container(
-                          width: 300,
-                          height: 300,
-                          child: Rive(
-                              alignment: Alignment.center,
-                              artboard: _riveArtboard!),
-                        ))
-                  : Column(
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Text(
-                            'Grafiek',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Grafiek',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
                         ),
-                        Container(
-                          height: 300,
-                          child: SfCartesianChart(
-                            primaryXAxis: const CategoryAxis(
+                      ),
+                    ),
+                    Container(
+                      height: 300,
+                      child: SfCartesianChart(
+                        primaryXAxis: const CategoryAxis(
                               edgeLabelPlacement: EdgeLabelPlacement
                                   .none, // Remove any label shift
                               labelAlignment: LabelAlignment
                                   .start, // Align labels to the start
                             ),
-                            primaryYAxis: const NumericAxis(
-                              interval: 1,
-                              minimum: 0,
-                              maximum: 10,
-                            ),
-                            tooltipBehavior: TooltipBehavior(enable: true),
-                            series: <CartesianSeries<_Incidents, String>>[
-                              LineSeries<_Incidents, String>(
-                                dataSource: _displayData,
-                                xValueMapper: (_Incidents incidentScale, _) =>
-                                    incidentScale.date,
-                                yValueMapper: (_Incidents incidentScale, _) =>
-                                    incidentScale.rating,
-                                name: 'incidentScale',
-                                markerSettings: MarkerSettings(isVisible: true),
-                              ),
-                            ],
-                          ),
+                        primaryYAxis: const NumericAxis(
+                          interval: 1,
+                          minimum: 0,
+                          maximum: 10,
                         ),
-                      ],
+                        tooltipBehavior: TooltipBehavior(enable: true),
+                        series: <CartesianSeries<_Incidents, String>>[
+                          LineSeries<_Incidents, String>(
+                            dataSource: _displayData,
+                            xValueMapper: (_Incidents incidentScale, _) =>
+                                incidentScale.date,
+                            yValueMapper: (_Incidents incidentScale, _) =>
+                                incidentScale.rating,
+                            name: 'incidentScale',
+                            markerSettings: MarkerSettings(isVisible: true),
+                          ),
+                        ],
+                      ),
                     ),
+                  ],
+                ),
+              if (_currentPage == 2)
+                Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        'Nieuwe Weergave',
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                    // Hier kun je de inhoud van je derde weergave toevoegen
+                    Container(
+                      height: 300,
+                      color: Colors.grey[300],
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              'Locatie:',
+                              style: TextStyle(fontSize: 18),
+                            ),
+                            Text(
+                              widget.selectedLocation,
+                              style: TextStyle(
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
+                children: List.generate(3, (index) {
+                  return Container(
                     width: 10,
                     height: 10,
+                    margin: EdgeInsets.symmetric(horizontal: 4),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: _showingFlower ? Colors.blue : Colors.grey,
@@ -453,9 +488,10 @@ class _OverzichtPageState extends State<OverzichtPage> {
                       shape: BoxShape.circle,
                       color: !_showingFlower ? Colors.blue : Colors.grey,
                     ),
-                  ),
-                ],
+                  );
+                }),
               ),
+              SizedBox(height: 20),
             ],
           ),
         ),

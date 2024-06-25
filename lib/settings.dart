@@ -105,9 +105,10 @@ class _SettingsPageState extends State<SettingsPage> {
     });
     switch (index) {
       case 0:
+        String selectedLocation = 'Dummy Location'; // Replace with actual logic
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => OverzichtPage()),
+          MaterialPageRoute(builder: (context) => OverzichtPage(selectedLocation: selectedLocation)),
         );
         break;
       case 1:

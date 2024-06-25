@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:industry_project/overview.dart';
+import 'package:industry_project/overview.dart'; // Zorg ervoor dat de import correct is
 import 'package:industry_project/settings.dart';
 import 'package:rive/rive.dart';
 import 'rating.dart';
@@ -96,23 +96,27 @@ class _HomePageState extends State<HomePage> {
     setState(() {
       _selectedIndex = index;
     });
+
+    String selectedLocation = ''; // Definieer een dummy locatie
+
     switch (index) {
       case 0:
         Navigator.push(
-          context as BuildContext,
-          MaterialPageRoute(builder: (context) => OverzichtPage()),
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  OverzichtPage(selectedLocation: selectedLocation)),
         );
         break;
       case 1:
         Navigator.push(
-          context as BuildContext,
+          context,
           MaterialPageRoute(builder: (context) => SettingsPage()),
         );
         break;
-
       case 2:
         Navigator.push(
-          context as BuildContext,
+          context,
           MaterialPageRoute(builder: (context) => HomePage()),
         );
         break;
