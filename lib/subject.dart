@@ -26,6 +26,7 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
   List<String> selectedTopics = [];
   String? selectedLocation;
   TextEditingController _customLocationController = TextEditingController();
+  final FocusNode _focusNode = FocusNode();
 
   void _selectLocation() async {
     bool serviceEnabled;
@@ -246,42 +247,45 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
                     ),
                     const SizedBox(height: 35),
                     // Voeg nieuw onderwerp toe
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 25.0),
-                      child: OutlinedButton.icon(
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor:
-                              const Color.fromARGB(255, 65, 130, 216),
-                          backgroundColor: Colors.white,
-                          side: const BorderSide(
-                            color: Color.fromARGB(255, 65, 130, 216),
-                            width: 2,
-                          ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const OnderwerpPage(
-                                rating: 0,
-                              ),
+                    Align(
+                      alignment: Alignment.centerLeft,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 25.0),
+                        child: OutlinedButton.icon(
+                          style: OutlinedButton.styleFrom(
+                            foregroundColor:
+                                const Color.fromARGB(255, 65, 130, 216),
+                            backgroundColor: Colors.white,
+                            side: const BorderSide(
+                              color: Color.fromARGB(255, 65, 130, 216),
+                              width: 2,
                             ),
-                          );
-                        },
-                        icon: const Icon(
-                          Icons.add,
-                          color: Color.fromARGB(255, 65, 130, 216),
-                        ),
-                        label: const Text(
-                          'Voeg nieuw onderwerp toe',
-                          style: TextStyle(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const OnderwerpPage(
+                                  rating: 0,
+                                ),
+                              ),
+                            );
+                          },
+                          icon: const Icon(
+                            Icons.add,
                             color: Color.fromARGB(255, 65, 130, 216),
-                            fontSize: 15,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.bold,
+                          ),
+                          label: const Text(
+                            'Voeg nieuw onderwerp toe',
+                            style: TextStyle(
+                              color: Color.fromARGB(255, 65, 130, 216),
+                              fontSize: 15,
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
@@ -310,9 +314,9 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
                               // Show location options overlay
                               showLocationOptionsOverlay(context);
                             },
-                            child: Row(
+                            child: const Row(
                               mainAxisAlignment: MainAxisAlignment.center,
-                              children: const [
+                              children: [
                                 Icon(
                                   Icons.add_location,
                                   color: Color.fromARGB(255, 65, 130, 216),
@@ -353,12 +357,16 @@ class _OnderwerpPageState extends State<OnderwerpPage> {
                       width: 300,
                       height: 120,
                       child: TextField(
+                        focusNode: _focusNode,
                         controller: messageController,
                         maxLines: 10,
                         decoration: InputDecoration(
                           border: OutlineInputBorder(),
                           labelText: 'Korte samenvatting van gebeurtenis',
                         ),
+                        onSubmitted: (value) {
+                          _focusNode.unfocus();
+                        },
                       ),
                     ),
                     const SizedBox(height: 100),
